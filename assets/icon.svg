@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="oceanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0369a1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="fishGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F97316;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="128" cy="128" r="120" fill="url(#oceanGrad)"/>
+
+  <!-- Fish body -->
+  <ellipse cx="128" cy="128" rx="50" ry="35" fill="url(#fishGrad)" opacity="0.9"/>
+
+  <!-- Tail -->
+  <path d="M 78 128 Q 60 110 50 128 Q 60 146 78 128" fill="url(#fishGrad)" opacity="0.8"/>
+
+  <!-- Dorsal fin -->
+  <path d="M 110 100 Q 115 85 130 88 L 140 100" fill="url(#fishGrad)" opacity="0.7"/>
+
+  <!-- Eye -->
+  <circle cx="155" cy="120" r="8" fill="white"/>
+  <circle cx="157" cy="121" r="4" fill="black"/>
+
+  <!-- Pectoral fin -->
+  <ellipse cx="115" cy="145" rx="15" ry="10" fill="url(#fishGrad)" opacity="0.6"/>
+
+  <!-- Bubbles -->
+  <circle cx="180" cy="80" r="6" fill="white" opacity="0.4"/>
+  <circle cx="195" cy="95" r="4" fill="white" opacity="0.3"/>
+  <circle cx="185" cy="110" r="5" fill="white" opacity="0.35"/>
+</svg>
