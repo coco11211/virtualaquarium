@@ -533,3 +533,99 @@ rescales the terms by `6^j` and `6^{j−1}`: **a constant factor. The exponent
 This is the same `√6` that rho already gets, and for the same reason. The `j=0` CM
 structure — secp256k1's most distinctive feature — is worth a constant, at every level of
 the attack, and nothing more.
+
+---
+
+## C1 — SEMAEV-COPPERSMITH: the exponent gap, derived and measured
+**Status:** COMPLETE · **Verdict: DEAD, and the gap grows with `k`** · **Date:** 2026-09-17
+**Data:** `ecdlp/data/coppersmith_gap.json`, `coppersmith_measure.json`
+**Code:** `ecdlp/py/coppersmith.py`
+
+The last major open branch, and `IDEA_QUEUE.md`'s item #2. Take the factor base to be the
+points with `x` in a box `[0, B]`, `B = p^e` — intervals, GAPs, digit boxes and Eisenstein
+balls are all of this type, and by Freiman/Green–Ruzsa this is essentially the *only*
+intermediate-size structured subset `F_p` admits. Decomposition then means finding a
+**small root** of `S_{k+1}(x_1,…,x_k, x_R) ≡ 0 (mod p)` with `|x_i| < p^e` — exactly
+Coppersmith's setting, and genuinely non-generic (it uses the archimedean structure of the
+integer representatives, which a generic group does not have).
+
+**Two conditions must hold at once, and they pull opposite ways.**
+
+- *Existence.* `{S_{k+1} = 0}` is `(k−1)`-dimensional over `F_p`, so it has `≈ p^{k−1}`
+  points; intersected with a box of volume `p^{ek}` it has `≈ p^{ek−1}`. Relations exist
+  iff **`e ≥ 1/k`**.
+- *Solvability.* For the standard triangular shift lattice with shifts `0..s` in each of
+  `k` variables and `f` of degree `d` in each variable, the monomial box is `{0..d+s}^k`:
+  `dim = (d+s+1)^k`, `det = B^{k(d+s)(d+s+1)^k/2} · p^{(d+s+1)^k−(s+1)^k}`, and
+  `det < p^{dim}` gives
+  **`e < e*(k,d,s) = 2(s+1)^k / (k·(d+s)·(d+s+1)^k)`**.
+  Semaev's `S_{k+1}` has `d = 2^{k−1}`.
+
+**Derived gap** (`e*(k) = max_s e*(k,d,s)`):
+
+| k | d = 2^{k−1} | best shift s | e* (solvable) | 1/k (needed) | shortfall |
+|---|---|---|---|---|---|
+| 2 | 2 | 2 | 0.09000 | 0.50000 | 5.6× |
+| 3 | 4 | 10 | 0.01878 | 0.33333 | 17.7× |
+| **4** | **8** | **30** | **0.00525** | **0.25000** | **47.6×** |
+| 5 | 16 | 78 | 0.00169 | 0.20000 | 118.2× |
+| 6 | 32 | 190 | 0.00059 | 0.16667 | 281.2× |
+| 8 | 128 | 400 | 0.00005 | 0.12500 | 2421.6× |
+
+`k = 4` is the *first* `k` that could beat rho at all (see the accounting in
+`IDEA_QUEUE.md`), and the shortfall there is already 47.6×. **The gap grows with `k` —
+the opposite of what an attack needs.**
+
+**Measured with real LLL** (PARI `qflll`), planting a genuine 2-term decomposition with
+both x-coordinates in the box, then scoring the step an attacker would actually perform:
+two short vectors vanishing at the root **over `Z`**, whose resultant eliminates `v` and
+leaves a nonzero univariate polynomial with `x_1` as a root.
+
+| curve | e = 0.09 | 0.12 | 0.14 | 0.16 | 0.20 | 0.25 | 0.33 | 0.50 |
+|---|---|---|---|---|---|---|---|---|
+| 32-bit | 0/4 | 2/4 | — | 0/4 | 0/4 | 0/4 | 0/4 | 0/4 |
+| 40-bit | 3/4 | 3/4 | — | 0/4 | 0/4 | 0/4 | 0/4 | 0/4 |
+| 48-bit | 4/4 | 3/4 | — | 0/4 | 0/4 | 0/4 | 0/4 | 0/4 |
+
+The threshold sits at **`e* ≈ 0.12–0.14`** and is **stable across 32/40/48 bits**, which
+is what makes it an exponent rather than a size artifact. It is slightly above the
+heuristic bound 0.09, as LLL usually is.
+
+**Saturation with shift order** (48-bit curve) — the kill criterion:
+
+| s | lattice dim | e = 0.06 | 0.09 | 0.12 | 0.14 | 0.16 | 0.20 |
+|---|---|---|---|---|---|---|---|
+| 1 | 16 | 4/4 | 4/4 | 3/4 | 0/4 | 0/4 | 0/4 |
+| 2 | 25 | 4/4 | 4/4 | 3/4 | 0/4 | 0/4 | 0/4 |
+| 3 | 36 | 2/4 | 4/4 | 3/4 | 0/4 | 0/4 | 0/4 |
+
+**Tripling the lattice dimension buys nothing.** `e*` saturates at ≈0.13, exactly as the
+closed form predicts (it peaks at `s = 2` and *declines* afterwards). Against the required
+0.5 at `k = 2`, and 0.25 at `k = 4` where the derived `e*` is 0.005.
+
+**Verdict: DEAD.** Every interval / GAP / box / digit / Eisenstein-ball factor base
+attacked by lattice methods is closed by one number, and the number gets worse exactly
+where an attack would need it to get better.
+
+**Two bugs caught in my own harness before reporting**, both of which would have produced
+fake successes: (i) PARI's `qflll` treats *columns* as the basis while `[a,b;c,d]` is
+row-major, so reading the result row-wise returned vectors that were not lattice elements
+at all; (ii) scoring "two short vectors vanish at the root" is too weak — Coppersmith only
+works if they are independent enough for elimination to leave a nonzero univariate
+polynomial, so the resultant step is now what is scored.
+
+---
+
+## Note on the multi-agent idea sweep
+The parallel sweep completed: 71 agents, 47 raw ideas, 34 ranked, 25 discarded. Its
+audit agents ran their own experiments, and several of their closures **independently
+reproduce results in this log** — notably `fp-log-quasihom` (my T1) and the cubic-character
+and quadratic-phase (Gowers `U³`) probes, which they closed with exhaustive Fourier maxima
+matching the `√(2n log n)` random baseline. Their rank-1 item was this session's
+`SEMAEV-COPPERSMITH`, and their headline claim (`e* ≈ 1/9` at `k=2`) is corroborated by my
+independent derivation (0.09) and measurement (0.12–0.14).
+
+**Caveat, stated plainly:** only the rank-1 claim was independently re-derived and
+re-measured here. Their other closures are recorded as *reported*, not verified, and the
+ideas they discarded remain listed in `IDEA_QUEUE.md` rather than deleted.
+Full ranking: `ecdlp/data/wf_ranking.json`; raw ideas: `ecdlp/data/wf_ideas_raw.json`.
