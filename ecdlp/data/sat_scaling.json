@@ -1,0 +1,62 @@
+[
+ {
+  "bits": 8,
+  "curve": "c8_0",
+  "target": 0,
+  "seconds": 14.301726838999457,
+  "status": "sat",
+  "solved": true,
+  "correct": true,
+  "n": 139
+ },
+ {
+  "bits": 8,
+  "curve": "c8_0",
+  "target": 1,
+  "seconds": 12.239773203999903,
+  "status": "sat",
+  "solved": true,
+  "correct": true,
+  "n": 139
+ },
+ {
+  "bits": 8,
+  "curve": "c8_0",
+  "target": 2,
+  "seconds": 8.822687341000346,
+  "status": "sat",
+  "solved": true,
+  "correct": true,
+  "n": 139
+ },
+ {
+  "bits": 9,
+  "curve": "c9_0",
+  "target": 0,
+  "seconds": 87.54974437300007,
+  "status": "sat",
+  "solved": true,
+  "correct": true,
+  "n": 313
+ },
+ {
+  "bits": 9,
+  "curve": "c9_0",
+  "target": 1,
+  "seconds": 108.87176638099936,
+  "status": "sat",
+  "solved": true,
+  "correct": true,
+  "n": 313
+ },
+ {
+  "bits": 9,
+  "curve": "c9_0",
+  "target": 2,
+  "seconds": 30.017035881999618,
+  "status": "sat",
+  "solved": true,
+  "correct": true,
+  "n": 313
+ }
+]

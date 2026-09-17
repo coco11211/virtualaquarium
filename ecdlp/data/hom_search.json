@@ -1,0 +1,1019 @@
+[
+ {
+  "curve": "c20_0",
+  "bits": 20,
+  "p": 525043,
+  "n": 524269,
+  "g": 2,
+  "T1": {
+   "test": "L(kG) vs k",
+   "chi2": 1201.8332899899642,
+   "dof": "961",
+   "pvalue": 1.63958126536688e-07,
+   "n": 120000
+  },
+  "T1_random_table_control": {
+   "chi2": 1259.0636005746476,
+   "dof": "961",
+   "pvalue": 2.5552006491247384e-10,
+   "predicted_excess": 219.9634157274224
+  },
+  "T1_lowbits": {
+   "test": "L low 4 bits vs k low 4 bits",
+   "chi2": 274.0966101134421,
+   "dof": "225",
+   "pvalue": 0.014059275984307633
+  },
+  "T2": {
+   "test": "L(P+Q)-L(P)-L(Q) uniform?",
+   "chi2": 45.820800000000006,
+   "dof": 31,
+   "pvalue": 0.042056154423094814,
+   "n": 120000,
+   "max_bin_excess": 0.0397333333333334
+  },
+  "T2_control": {
+   "chi2": 37.02986666666666,
+   "dof": 31,
+   "pvalue": 0.21052004213748407
+  },
+  "T3": [
+   {
+    "map": "x",
+    "cond_entropy_bits": 3.9756338116946655,
+    "uncond_entropy_bits": 3.999907301760265,
+    "info_bits": 0.024273490065599646
+   },
+   {
+    "map": "x+y",
+    "cond_entropy_bits": 3.9762447071785245,
+    "uncond_entropy_bits": 3.999886015087404,
+    "info_bits": 0.023641307908879305
+   },
+   {
+    "map": "x^3",
+    "cond_entropy_bits": 3.9762861995733387,
+    "uncond_entropy_bits": 3.9997981907082636,
+    "info_bits": 0.02351199113492486
+   },
+   {
+    "map": "y/x",
+    "cond_entropy_bits": 3.9764808000925025,
+    "uncond_entropy_bits": 3.9999517820388695,
+    "info_bits": 0.023470981946366987
+   },
+   {
+    "map": "logy",
+    "cond_entropy_bits": 3.976478573687136,
+    "uncond_entropy_bits": 3.9999077162877006,
+    "info_bits": 0.02342914260056439
+   },
+   {
+    "map": "y",
+    "cond_entropy_bits": 3.9765511354715017,
+    "uncond_entropy_bits": 3.999861002593342,
+    "info_bits": 0.023309867121840355
+   },
+   {
+    "map": "logx",
+    "cond_entropy_bits": 3.9767327524050975,
+    "uncond_entropy_bits": 3.99989903615229,
+    "info_bits": 0.02316628374719265
+   },
+   {
+    "map": "x mod small",
+    "cond_entropy_bits": 3.9767269778489953,
+    "uncond_entropy_bits": 3.999815619510708,
+    "info_bits": 0.02308864166171265
+   },
+   {
+    "map": "x^2",
+    "cond_entropy_bits": 3.9770125814767714,
+    "uncond_entropy_bits": 3.9998953433611995,
+    "info_bits": 0.02288276188442806
+   },
+   {
+    "map": "log(x*y)",
+    "cond_entropy_bits": 3.977205651766782,
+    "uncond_entropy_bits": 3.9998124503236596,
+    "info_bits": 0.02260679855687764
+   },
+   {
+    "map": "x*y",
+    "cond_entropy_bits": 3.9774069009336577,
+    "uncond_entropy_bits": 3.999892917658866,
+    "info_bits": 0.022486016725208113
+   },
+   {
+    "map": "legendre(x)",
+    "cond_entropy_bits": 0.9999318027213886,
+    "uncond_entropy_bits": 0.9999948704115529,
+    "info_bits": 6.306769016428682e-05
+   }
+  ]
+ },
+ {
+  "curve": "c20_1",
+  "bits": 20,
+  "p": 533389,
+  "n": 533887,
+  "g": 2,
+  "T1": {
+   "test": "L(kG) vs k",
+   "chi2": 1151.0198621111267,
+   "dof": "961",
+   "pvalue": 2.1324900507948053e-05,
+   "n": 120000
+  },
+  "T1_random_table_control": {
+   "chi2": 1205.8423102261966,
+   "dof": "961",
+   "pvalue": 1.0774668976912795e-07,
+   "predicted_excess": 216.00076420665798
+  },
+  "T1_lowbits": {
+   "test": "L low 4 bits vs k low 4 bits",
+   "chi2": 250.77226063305818,
+   "dof": "225",
+   "pvalue": 0.11457611237758786
+  },
+  "T2": {
+   "test": "L(P+Q)-L(P)-L(Q) uniform?",
+   "chi2": 26.28533333333333,
+   "dof": 31,
+   "pvalue": 0.7075426700341827,
+   "n": 120000,
+   "max_bin_excess": 0.030933333333333257
+  },
+  "T2_control": {
+   "chi2": 39.947199999999995,
+   "dof": 31,
+   "pvalue": 0.13023540801459843
+  },
+  "T3": [
+   {
+    "map": "y/x",
+    "cond_entropy_bits": 3.9753384125107,
+    "uncond_entropy_bits": 3.999915297711056,
+    "info_bits": 0.024576885200355836
+   },
+   {
+    "map": "logx",
+    "cond_entropy_bits": 3.975864844973798,
+    "uncond_entropy_bits": 3.999920486675157,
+    "info_bits": 0.024055641701358876
+   },
+   {
+    "map": "x+y",
+    "cond_entropy_bits": 3.9758099735956898,
+    "uncond_entropy_bits": 3.99974288271384,
+    "info_bits": 0.02393290911815038
+   },
+   {
+    "map": "log(x*y)",
+    "cond_entropy_bits": 3.9762074834179812,
+    "uncond_entropy_bits": 3.99982030729447,
+    "info_bits": 0.023612823876488775
+   },
+   {
+    "map": "y",
+    "cond_entropy_bits": 3.9762577303296616,
+    "uncond_entropy_bits": 3.9998638462851654,
+    "info_bits": 0.02360611595550388
+   },
+   {
+    "map": "x",
+    "cond_entropy_bits": 3.976358392358284,
+    "uncond_entropy_bits": 3.99989463752947,
+    "info_bits": 0.02353624517118602
+   },
+   {
+    "map": "x mod small",
+    "cond_entropy_bits": 3.976405430084664,
+    "uncond_entropy_bits": 3.9998529640961156,
+    "info_bits": 0.0234475340114515
+   },
+   {
+    "map": "logy",
+    "cond_entropy_bits": 3.9765055615543226,
+    "uncond_entropy_bits": 3.999865509356735,
+    "info_bits": 0.02335994780241224
+   },
+   {
+    "map": "x*y",
+    "cond_entropy_bits": 3.9768090568743433,
+    "uncond_entropy_bits": 3.999889497398791,
+    "info_bits": 0.0230804405244478
+   },
+   {
+    "map": "x^2",
+    "cond_entropy_bits": 3.9769693994783526,
+    "uncond_entropy_bits": 3.9999524504445114,
+    "info_bits": 0.022983050966158824
+   },
+   {
+    "map": "x^3",
+    "cond_entropy_bits": 3.977532860024985,
+    "uncond_entropy_bits": 3.9996369659627313,
+    "info_bits": 0.022104105937746255
+   },
+   {
+    "map": "legendre(x)",
+    "cond_entropy_bits": 0.9999707588088044,
+    "uncond_entropy_bits": 0.9999943446280501,
+    "info_bits": 2.3585819245774964e-05
+   }
+  ]
+ },
+ {
+  "curve": "c20_2",
+  "bits": 20,
+  "p": 540187,
+  "n": 541543,
+  "g": 2,
+  "T1": {
+   "test": "L(kG) vs k",
+   "chi2": 1142.6904138135556,
+   "dof": "961",
+   "pvalue": 4.36123431302617e-05,
+   "n": 120000
+  },
+  "T1_random_table_control": {
+   "chi2": 1117.5683622997374,
+   "dof": "961",
+   "pvalue": 0.0003260749288917786,
+   "predicted_excess": 212.94707899465047
+  },
+  "T1_lowbits": {
+   "test": "L low 4 bits vs k low 4 bits",
+   "chi2": 249.90588027098732,
+   "dof": "225",
+   "pvalue": 0.12210949227867729
+  },
+  "T2": {
+   "test": "L(P+Q)-L(P)-L(Q) uniform?",
+   "chi2": 33.81067342227851,
+   "dof": 31,
+   "pvalue": 0.3332774655356487,
+   "n": 119999,
+   "max_bin_excess": 0.04347536229468574
+  },
+  "T2_control": {
+   "chi2": 36.84163201360011,
+   "dof": 31,
+   "pvalue": 0.21670567150979084
+  },
+  "T3": [
+   {
+    "map": "x^2",
+    "cond_entropy_bits": 3.9761054926234123,
+    "uncond_entropy_bits": 3.9998117488918954,
+    "info_bits": 0.023706256268483106
+   },
+   {
+    "map": "x*y",
+    "cond_entropy_bits": 3.9762752529567256,
+    "uncond_entropy_bits": 3.999938786552021,
+    "info_bits": 0.023663533595295494
+   },
+   {
+    "map": "x mod small",
+    "cond_entropy_bits": 3.976254647219243,
+    "uncond_entropy_bits": 3.999815270425526,
+    "info_bits": 0.023560623206282827
+   },
+   {
+    "map": "y/x",
+    "cond_entropy_bits": 3.976365325603647,
+    "uncond_entropy_bits": 3.9998363036614073,
+    "info_bits": 0.023470978057760217
+   },
+   {
+    "map": "logx",
+    "cond_entropy_bits": 3.9765841178262535,
+    "uncond_entropy_bits": 3.9999002308987954,
+    "info_bits": 0.02331611307254189
+   },
+   {
+    "map": "x",
+    "cond_entropy_bits": 3.976829977692076,
+    "uncond_entropy_bits": 3.9998304351934006,
+    "info_bits": 0.02300045750132451
+   },
+   {
+    "map": "x^3",
+    "cond_entropy_bits": 3.976839583209233,
+    "uncond_entropy_bits": 3.9998256039332505,
+    "info_bits": 0.022986020724017564
+   },
+   {
+    "map": "x+y",
+    "cond_entropy_bits": 3.9768337626759833,
+    "uncond_entropy_bits": 3.999766933531419,
+    "info_bits": 0.02293317085543567
+   },
+   {
+    "map": "logy",
+    "cond_entropy_bits": 3.9770073129031482,
+    "uncond_entropy_bits": 3.999906395871013,
+    "info_bits": 0.022899082967864803
+   },
+   {
+    "map": "y",
+    "cond_entropy_bits": 3.9769689403685917,
+    "uncond_entropy_bits": 3.9998495799532043,
+    "info_bits": 0.022880639584612616
+   },
+   {
+    "map": "log(x*y)",
+    "cond_entropy_bits": 3.9770942758677146,
+    "uncond_entropy_bits": 3.9998552680421926,
+    "info_bits": 0.022760992174478023
+   },
+   {
+    "map": "legendre(x)",
+    "cond_entropy_bits": 0.999957556221645,
+    "uncond_entropy_bits": 0.9999978947812818,
+    "info_bits": 4.033855963680999e-05
+   }
+  ]
+ },
+ {
+  "curve": "c22_0",
+  "bits": 22,
+  "p": 2097211,
+  "n": 2098699,
+  "g": 2,
+  "T1": {
+   "test": "L(kG) vs k",
+   "chi2": 968.7069826040912,
+   "dof": "961",
+   "pvalue": 0.4244489019828042,
+   "n": 120000
+  },
+  "T1_random_table_control": {
+   "chi2": 934.0771705969372,
+   "dof": "961",
+   "pvalue": 0.7273088944094764,
+   "predicted_excess": 54.948327511472584
+  },
+  "T1_lowbits": {
+   "test": "L low 4 bits vs k low 4 bits",
+   "chi2": 231.17295448539204,
+   "dof": "225",
+   "pvalue": 0.3745831129039961
+  },
+  "T2": {
+   "test": "L(P+Q)-L(P)-L(Q) uniform?",
+   "chi2": 19.957333333333334,
+   "dof": 31,
+   "pvalue": 0.9367139335506788,
+   "n": 120000,
+   "max_bin_excess": 0.01866666666666661
+  },
+  "T2_control": {
+   "chi2": 36.053333333333335,
+   "dof": 31,
+   "pvalue": 0.2439699449361554
+  },
+  "T3": [
+   {
+    "map": "x^3",
+    "cond_entropy_bits": 3.9755721950672465,
+    "uncond_entropy_bits": 3.999843926506707,
+    "info_bits": 0.02427173143946071
+   },
+   {
+    "map": "y",
+    "cond_entropy_bits": 3.9759336005382604,
+    "uncond_entropy_bits": 3.9998546400642603,
+    "info_bits": 0.023921039525999888
+   },
+   {
+    "map": "x*y",
+    "cond_entropy_bits": 3.975983045193068,
+    "uncond_entropy_bits": 3.999871462950378,
+    "info_bits": 0.023888417757309988
+   },
+   {
+    "map": "x^2",
+    "cond_entropy_bits": 3.9761254690379886,
+    "uncond_entropy_bits": 3.999941715353513,
+    "info_bits": 0.02381624631552448
+   },
+   {
+    "map": "logx",
+    "cond_entropy_bits": 3.9761954524223513,
+    "uncond_entropy_bits": 3.9999111376532905,
+    "info_bits": 0.023715685230939254
+   },
+   {
+    "map": "logy",
+    "cond_entropy_bits": 3.976358671966261,
+    "uncond_entropy_bits": 3.9999508873229024,
+    "info_bits": 0.023592215356641244
+   },
+   {
+    "map": "x mod small",
+    "cond_entropy_bits": 3.9764597637715275,
+    "uncond_entropy_bits": 3.999940311546553,
+    "info_bits": 0.023480547775025506
+   },
+   {
+    "map": "log(x*y)",
+    "cond_entropy_bits": 3.976439629913592,
+    "uncond_entropy_bits": 3.999874867040141,
+    "info_bits": 0.023435237126549158
+   },
+   {
+    "map": "x",
+    "cond_entropy_bits": 3.976477060126596,
+    "uncond_entropy_bits": 3.9998836150950465,
+    "info_bits": 0.023406554968450344
+   },
+   {
+    "map": "x+y",
+    "cond_entropy_bits": 3.9770084739583362,
+    "uncond_entropy_bits": 3.9999177554886676,
+    "info_bits": 0.022909281530331338
+   },
+   {
+    "map": "y/x",
+    "cond_entropy_bits": 3.9777375341254233,
+    "uncond_entropy_bits": 3.99993719840747,
+    "info_bits": 0.022199664282046783
+   },
+   {
+    "map": "legendre(x)",
+    "cond_entropy_bits": 0.9999878383864746,
+    "uncond_entropy_bits": 0.9999995189012252,
+    "info_bits": 1.1680514750533888e-05
+   }
+  ]
+ },
+ {
+  "curve": "c22_1",
+  "bits": 22,
+  "p": 2105203,
+  "n": 2105359,
+  "g": 2,
+  "T1": {
+   "test": "L(kG) vs k",
+   "chi2": 1001.4030507540712,
+   "dof": "961",
+   "pvalue": 0.17770760715988007,
+   "n": 120000
+  },
+  "T1_random_table_control": {
+   "chi2": 1048.0048944873051,
+   "dof": "961",
+   "pvalue": 0.026022976943928276,
+   "predicted_excess": 54.77450639059657
+  },
+  "T1_lowbits": {
+   "test": "L low 4 bits vs k low 4 bits",
+   "chi2": 256.2295310295664,
+   "dof": "225",
+   "pvalue": 0.07490810592523932
+  },
+  "T2": {
+   "test": "L(P+Q)-L(P)-L(Q) uniform?",
+   "chi2": 30.3248,
+   "dof": 31,
+   "pvalue": 0.5005718091652817,
+   "n": 120000,
+   "max_bin_excess": 0.031199999999999894
+  },
+  "T2_control": {
+   "chi2": 26.014933333333335,
+   "dof": 31,
+   "pvalue": 0.7206081225128858
+  },
+  "T3": [
+   {
+    "map": "x+y",
+    "cond_entropy_bits": 3.9760367661631966,
+    "uncond_entropy_bits": 3.9999124254900558,
+    "info_bits": 0.0238756593268592
+   },
+   {
+    "map": "log(x*y)",
+    "cond_entropy_bits": 3.9760630014137432,
+    "uncond_entropy_bits": 3.9999060732279217,
+    "info_bits": 0.02384307181417844
+   },
+   {
+    "map": "x^3",
+    "cond_entropy_bits": 3.9764626030169845,
+    "uncond_entropy_bits": 3.999864727979423,
+    "info_bits": 0.023402124962438542
+   },
+   {
+    "map": "x mod small",
+    "cond_entropy_bits": 3.9765900583263156,
+    "uncond_entropy_bits": 3.9998843327265208,
+    "info_bits": 0.02329427440020515
+   },
+   {
+    "map": "x",
+    "cond_entropy_bits": 3.9767976016956967,
+    "uncond_entropy_bits": 3.999920196880389,
+    "info_bits": 0.023122595184692063
+   },
+   {
+    "map": "logy",
+    "cond_entropy_bits": 3.9768746290146595,
+    "uncond_entropy_bits": 3.999885937159558,
+    "info_bits": 0.02301130814489838
+   },
+   {
+    "map": "x^2",
+    "cond_entropy_bits": 3.9769946674856547,
+    "uncond_entropy_bits": 3.9999460833584255,
+    "info_bits": 0.02295141587277083
+   },
+   {
+    "map": "y/x",
+    "cond_entropy_bits": 3.9769976733998034,
+    "uncond_entropy_bits": 3.99993943480218,
+    "info_bits": 0.02294176140237658
+   },
+   {
+    "map": "x*y",
+    "cond_entropy_bits": 3.976962744620788,
+    "uncond_entropy_bits": 3.9998678503772527,
+    "info_bits": 0.02290510575646465
+   },
+   {
+    "map": "logx",
+    "cond_entropy_bits": 3.9770040227996653,
+    "uncond_entropy_bits": 3.9998982165458647,
+    "info_bits": 0.022894193746199498
+   },
+   {
+    "map": "y",
+    "cond_entropy_bits": 3.9773241090383897,
+    "uncond_entropy_bits": 3.999912365831068,
+    "info_bits": 0.022588256792678063
+   },
+   {
+    "map": "legendre(x)",
+    "cond_entropy_bits": 0.9999776554844658,
+    "uncond_entropy_bits": 0.9999965086751847,
+    "info_bits": 1.8853190718925994e-05
+   }
+  ]
+ },
+ {
+  "curve": "c22_2",
+  "bits": 22,
+  "p": 2113087,
+  "n": 2115457,
+  "g": 3,
+  "T1": {
+   "test": "L(kG) vs k",
+   "chi2": 1026.9603721451538,
+   "dof": "961",
+   "pvalue": 0.06856494036492988,
+   "n": 120000
+  },
+  "T1_random_table_control": {
+   "chi2": 1085.3712811375563,
+   "dof": "961",
+   "pvalue": 0.00309027913364319,
+   "predicted_excess": 54.513043753666466
+  },
+  "T1_lowbits": {
+   "test": "L low 4 bits vs k low 4 bits",
+   "chi2": 257.54293802492776,
+   "dof": "225",
+   "pvalue": 0.067213104512032
+  },
+  "T2": {
+   "test": "L(P+Q)-L(P)-L(Q) uniform?",
+   "chi2": 25.5328,
+   "dof": 31,
+   "pvalue": 0.7433942856240778,
+   "n": 120000,
+   "max_bin_excess": 0.029066666666666574
+  },
+  "T2_control": {
+   "chi2": 32.919466666666665,
+   "dof": 31,
+   "pvalue": 0.3732400862946893
+  },
+  "T3": [
+   {
+    "map": "log(x*y)",
+    "cond_entropy_bits": 3.9763535809153647,
+    "uncond_entropy_bits": 3.9999271576770323,
+    "info_bits": 0.023573576761667603
+   },
+   {
+    "map": "x^3",
+    "cond_entropy_bits": 3.9764097419991375,
+    "uncond_entropy_bits": 3.9999450447783094,
+    "info_bits": 0.02353530277917182
+   },
+   {
+    "map": "x+y",
+    "cond_entropy_bits": 3.9764214703099774,
+    "uncond_entropy_bits": 3.999934057492169,
+    "info_bits": 0.023512587182191513
+   },
+   {
+    "map": "logy",
+    "cond_entropy_bits": 3.9765081838321534,
+    "uncond_entropy_bits": 3.999902317456045,
+    "info_bits": 0.023394133623891644
+   },
+   {
+    "map": "logx",
+    "cond_entropy_bits": 3.9765383136805967,
+    "uncond_entropy_bits": 3.9998957722365023,
+    "info_bits": 0.02335745855590554
+   },
+   {
+    "map": "x",
+    "cond_entropy_bits": 3.9765293286728434,
+    "uncond_entropy_bits": 3.9998539736978724,
+    "info_bits": 0.023324645025029067
+   },
+   {
+    "map": "y/x",
+    "cond_entropy_bits": 3.9768410085591004,
+    "uncond_entropy_bits": 3.9999464287818953,
+    "info_bits": 0.023105420222794937
+   },
+   {
+    "map": "x mod small",
+    "cond_entropy_bits": 3.9769951025244343,
+    "uncond_entropy_bits": 3.9999458103390975,
+    "info_bits": 0.02295070781466313
+   },
+   {
+    "map": "x*y",
+    "cond_entropy_bits": 3.977228906725849,
+    "uncond_entropy_bits": 3.9999053847510506,
+    "info_bits": 0.022676478025201785
+   },
+   {
+    "map": "y",
+    "cond_entropy_bits": 3.977540915769374,
+    "uncond_entropy_bits": 3.999931394126068,
+    "info_bits": 0.022390478356693944
+   },
+   {
+    "map": "x^2",
+    "cond_entropy_bits": 3.977571357056382,
+    "uncond_entropy_bits": 3.9999016508992096,
+    "info_bits": 0.022330293842827587
+   },
+   {
+    "map": "legendre(x)",
+    "cond_entropy_bits": 0.9999887298967878,
+    "uncond_entropy_bits": 0.9999958450342934,
+    "info_bits": 7.115137505619984e-06
+   }
+  ]
+ },
+ {
+  "curve": "c24_0",
+  "bits": 24,
+  "p": 8389039,
+  "n": 8387557,
+  "g": 7,
+  "T1": {
+   "test": "L(kG) vs k",
+   "chi2": 964.9504688552225,
+   "dof": "961",
+   "pvalue": 0.4581130136684758,
+   "n": 120000
+  },
+  "T1_random_table_control": {
+   "chi2": 903.4087103949805,
+   "dof": "961",
+   "pvalue": 0.9075082083478403,
+   "predicted_excess": 13.748937861167441
+  },
+  "T1_lowbits": {
+   "test": "L low 4 bits vs k low 4 bits",
+   "chi2": 251.76066246848922,
+   "dof": "225",
+   "pvalue": 0.10641218099945708
+  },
+  "T2": {
+   "test": "L(P+Q)-L(P)-L(Q) uniform?",
+   "chi2": 27.76853333333333,
+   "dof": 31,
+   "pvalue": 0.6330880255492575,
+   "n": 120000,
+   "max_bin_excess": 0.03173333333333339
+  },
+  "T2_control": {
+   "chi2": 19.66773333333333,
+   "dof": 31,
+   "pvalue": 0.9426625616169101
+  },
+  "T3": [
+   {
+    "map": "log(x*y)",
+    "cond_entropy_bits": 3.976286853091241,
+    "uncond_entropy_bits": 3.999928293837135,
+    "info_bits": 0.023641440745894027
+   },
+   {
+    "map": "y",
+    "cond_entropy_bits": 3.976254908186265,
+    "uncond_entropy_bits": 3.9998755863624944,
+    "info_bits": 0.023620678176229593
+   },
+   {
+    "map": "x",
+    "cond_entropy_bits": 3.9763543816235805,
+    "uncond_entropy_bits": 3.9999271969058867,
+    "info_bits": 0.02357281528230626
+   },
+   {
+    "map": "logy",
+    "cond_entropy_bits": 3.9763777960823363,
+    "uncond_entropy_bits": 3.999943867957028,
+    "info_bits": 0.02356607187469173
+   },
+   {
+    "map": "x^3",
+    "cond_entropy_bits": 3.9764747385107153,
+    "uncond_entropy_bits": 3.9999367753755375,
+    "info_bits": 0.023462036864822178
+   },
+   {
+    "map": "x*y",
+    "cond_entropy_bits": 3.9765690439081385,
+    "uncond_entropy_bits": 3.999922935487704,
+    "info_bits": 0.023353891579565467
+   },
+   {
+    "map": "logx",
+    "cond_entropy_bits": 3.976618784522682,
+    "uncond_entropy_bits": 3.999922188074404,
+    "info_bits": 0.02330340355172167
+   },
+   {
+    "map": "x+y",
+    "cond_entropy_bits": 3.9772524240422764,
+    "uncond_entropy_bits": 3.999916655775978,
+    "info_bits": 0.0226642317337018
+   },
+   {
+    "map": "y/x",
+    "cond_entropy_bits": 3.9774218556116705,
+    "uncond_entropy_bits": 3.9999638231966084,
+    "info_bits": 0.022541967584937872
+   },
+   {
+    "map": "x mod small",
+    "cond_entropy_bits": 3.9774273859161746,
+    "uncond_entropy_bits": 3.9999226503575427,
+    "info_bits": 0.022495264441368068
+   },
+   {
+    "map": "x^2",
+    "cond_entropy_bits": 3.9781794871475955,
+    "uncond_entropy_bits": 3.9998943305056023,
+    "info_bits": 0.021714843358006775
+   },
+   {
+    "map": "legendre(x)",
+    "cond_entropy_bits": 0.9999587635824715,
+    "uncond_entropy_bits": 0.9999998845843936,
+    "info_bits": 4.112100192210644e-05
+   }
+  ]
+ },
+ {
+  "curve": "c24_1",
+  "bits": 24,
+  "p": 8397073,
+  "n": 8402791,
+  "g": 5,
+  "T1": {
+   "test": "L(kG) vs k",
+   "chi2": 1000.4643366573933,
+   "dof": "961",
+   "pvalue": 0.18318382290770344,
+   "n": 120000
+  },
+  "T1_random_table_control": {
+   "chi2": 964.2438191305575,
+   "dof": "961",
+   "pvalue": 0.4644967776960614,
+   "predicted_excess": 13.724011462381963
+  },
+  "T1_lowbits": {
+   "test": "L low 4 bits vs k low 4 bits",
+   "chi2": 224.083335854927,
+   "dof": "225",
+   "pvalue": 0.5047179598757405
+  },
+  "T2": {
+   "test": "L(P+Q)-L(P)-L(Q) uniform?",
+   "chi2": 21.080533333333335,
+   "dof": 31,
+   "pvalue": 0.9097700906021077,
+   "n": 120000,
+   "max_bin_excess": 0.02960000000000007
+  },
+  "T2_control": {
+   "chi2": 40.32906666666666,
+   "dof": 31,
+   "pvalue": 0.12178588087505575
+  },
+  "T3": [
+   {
+    "map": "logx",
+    "cond_entropy_bits": 3.975545915121264,
+    "uncond_entropy_bits": 3.999891731803303,
+    "info_bits": 0.024345816682039167
+   },
+   {
+    "map": "y",
+    "cond_entropy_bits": 3.9761562342652557,
+    "uncond_entropy_bits": 3.9999362346523983,
+    "info_bits": 0.023780000387142675
+   },
+   {
+    "map": "x mod small",
+    "cond_entropy_bits": 3.976137657184481,
+    "uncond_entropy_bits": 3.9998699510105316,
+    "info_bits": 0.023732293826050466
+   },
+   {
+    "map": "logy",
+    "cond_entropy_bits": 3.976617822215667,
+    "uncond_entropy_bits": 3.999906578082803,
+    "info_bits": 0.02328875586713597
+   },
+   {
+    "map": "x^3",
+    "cond_entropy_bits": 3.9766770343989846,
+    "uncond_entropy_bits": 3.999874922187124,
+    "info_bits": 0.023197887788139582
+   },
+   {
+    "map": "x^2",
+    "cond_entropy_bits": 3.9768064463763486,
+    "uncond_entropy_bits": 3.999896402872724,
+    "info_bits": 0.023089956496375574
+   },
+   {
+    "map": "x",
+    "cond_entropy_bits": 3.976831589147094,
+    "uncond_entropy_bits": 3.9998781032255186,
+    "info_bits": 0.023046514078424618
+   },
+   {
+    "map": "x*y",
+    "cond_entropy_bits": 3.976957324592506,
+    "uncond_entropy_bits": 3.9999075934907173,
+    "info_bits": 0.0229502688982115
+   },
+   {
+    "map": "y/x",
+    "cond_entropy_bits": 3.977115577556957,
+    "uncond_entropy_bits": 3.999955262167484,
+    "info_bits": 0.02283968461052721
+   },
+   {
+    "map": "log(x*y)",
+    "cond_entropy_bits": 3.977411009521858,
+    "uncond_entropy_bits": 3.9998793168580313,
+    "info_bits": 0.022468307336173332
+   },
+   {
+    "map": "x+y",
+    "cond_entropy_bits": 3.9782509413540823,
+    "uncond_entropy_bits": 3.999936710196864,
+    "info_bits": 0.021685768842781616
+   },
+   {
+    "map": "legendre(x)",
+    "cond_entropy_bits": 0.9999962445566392,
+    "uncond_entropy_bits": 0.9999995383375377,
+    "info_bits": 3.2937808985833428e-06
+   }
+  ]
+ },
+ {
+  "curve": "c24_2",
+  "bits": 24,
+  "p": 8404597,
+  "n": 8399263,
+  "g": 2,
+  "T1": {
+   "test": "L(kG) vs k",
+   "chi2": 1013.0131042263674,
+   "dof": "961",
+   "pvalue": 0.11884102748636562,
+   "n": 120000
+  },
+  "T1_random_table_control": {
+   "chi2": 898.9072105342218,
+   "dof": "961",
+   "pvalue": 0.9240349972210968,
+   "predicted_excess": 13.729776052970362
+  },
+  "T1_lowbits": {
+   "test": "L low 4 bits vs k low 4 bits",
+   "chi2": 258.4780571735601,
+   "dof": "225",
+   "pvalue": 0.0621318189007375
+  },
+  "T2": {
+   "test": "L(P+Q)-L(P)-L(Q) uniform?",
+   "chi2": 27.29866666666667,
+   "dof": 31,
+   "pvalue": 0.6570912070017456,
+   "n": 120000,
+   "max_bin_excess": 0.04026666666666667
+  },
+  "T2_control": {
+   "chi2": 26.43306666666667,
+   "dof": 31,
+   "pvalue": 0.700325607034755
+  },
+  "T3": [
+   {
+    "map": "logy",
+    "cond_entropy_bits": 3.9756194554357376,
+    "uncond_entropy_bits": 3.9998190067504185,
+    "info_bits": 0.02419955131468088
+   },
+   {
+    "map": "x^2",
+    "cond_entropy_bits": 3.9764263863790266,
+    "uncond_entropy_bits": 3.9999465442175235,
+    "info_bits": 0.023520157838496925
+   },
+   {
+    "map": "y",
+    "cond_entropy_bits": 3.976529026150371,
+    "uncond_entropy_bits": 3.999938018342129,
+    "info_bits": 0.02340899219175796
+   },
+   {
+    "map": "logx",
+    "cond_entropy_bits": 3.976659954700721,
+    "uncond_entropy_bits": 3.9999215533072228,
+    "info_bits": 0.0232615986065019
+   },
+   {
+    "map": "x^3",
+    "cond_entropy_bits": 3.9769153298402276,
+    "uncond_entropy_bits": 3.9999404890562107,
+    "info_bits": 0.023025159215983138
+   },
+   {
+    "map": "log(x*y)",
+    "cond_entropy_bits": 3.977028433563922,
+    "uncond_entropy_bits": 3.999972852773258,
+    "info_bits": 0.022944419209335987
+   },
+   {
+    "map": "x*y",
+    "cond_entropy_bits": 3.977037621691569,
+    "uncond_entropy_bits": 3.999912069040005,
+    "info_bits": 0.02287444734843591
+   },
+   {
+    "map": "y/x",
+    "cond_entropy_bits": 3.9770913146531384,
+    "uncond_entropy_bits": 3.9998685148330053,
+    "info_bits": 0.022777200179866952
+   },
+   {
+    "map": "x mod small",
+    "cond_entropy_bits": 3.977296386754405,
+    "uncond_entropy_bits": 3.9999640224139905,
+    "info_bits": 0.022667635659585628
+   },
+   {
+    "map": "x",
+    "cond_entropy_bits": 3.9772659510180155,
+    "uncond_entropy_bits": 3.9998558770935575,
+    "info_bits": 0.022589926075542
+   },
+   {
+    "map": "x+y",
+    "cond_entropy_bits": 3.977340669135171,
+    "uncond_entropy_bits": 3.9998505073289903,
+    "info_bits": 0.02250983819381913
+   },
+   {
+    "map": "legendre(x)",
+    "cond_entropy_bits": 0.9999806787826475,
+    "uncond_entropy_bits": 0.9999977908720912,
+    "info_bits": 1.7112089443660494e-05
+   }
+  ]
+ }
+]

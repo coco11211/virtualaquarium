@@ -262,3 +262,83 @@ That is a structural statement, and N1/K1 are its empirical form: no feature of
 `x(kP)` depends on `k`, no coordinate predicate is compatible with the group law, and
 the sumset of a coordinate-structured set is indistinguishable from uniform.
 Surfaces 1, 4 and 5 fail for one shared reason, now measured three different ways.
+
+---
+
+## N2 — SMOOTH POINTS: is integer smoothness of `x(P)` compatible with the group law?
+**Status:** COMPLETE · **Verdict: DEAD** · **Date:** 2026-09-17
+**Data:** `ecdlp/data/smooth_followup.json` · **Code:** `ecdlp/py/smooth_followup.py`
+
+K1 left exactly one borderline signal: the predicate "`x(P)` is 256-smooth as an
+integer" showed mean ρ = 1.14 with one curve at ρ = 4.0 (|z| = 3.0, Bonferroni
+threshold 3.49) — on only 5000 pairs. "`x` is smooth" is an honest candidate for a
+new notion of a *smooth point*, so it earned a proper test.
+
+Re-run at 108× the sample size: B-smooth x-coordinates collected by **sieving random
+windows of [0,p)** (the first attempt trial-divided millions of candidates and was
+hopeless), 540,669 pairs over 11 curves, with a matched control on uniform points.
+
+| | mean ρ | mean z | max abs z |
+|---|---|---|---|
+| real (both x's smooth) | **1.0277** | +0.152 | 2.17 |
+| control (uniform points) | — | −0.604 | **2.55** |
+
+The control deviates *more* than the real data. The original ρ = 4.0 was a
+small-sample artifact (1 hit where 2.7 were expected, at the 48-bit curve's
+base rate of 8e-5). **Integer smoothness of the x-coordinate does not propagate
+through the group law.** K1's verdict stands with no loose ends.
+
+---
+
+## T1 — HOM-SEARCH: is there any map out of `E(F_p)` that respects the group law?
+**Status:** COMPLETE · **Verdict: DEAD** · **Date:** 2026-09-17
+**Data:** `ecdlp/data/hom_search.json` · **Code:** `ecdlp/py/hom_search.py`
+
+A homomorphism `f : E(F_p) → H` with easy DLP in `H` breaks ECDLP; MOV/Frey–Rück is
+the classical instance and is dead for secp256k1 because the embedding degree is
+astronomically large. But the x-coordinate already *lives* in `F_p^*`, where the DLP
+is subexponential — and for secp256k1 the prime is a degree-8 polynomial in `2^32`, so
+SNFS makes it cheaper still. So the natural question is whether
+`L(P) := log_g x(P) ∈ Z/(p−1)` carries anything. Tested on 20/22/24-bit curves small
+enough to tabulate the entire `F_p^*` discrete log.
+
+**T2 — quasi-homomorphism defect.** Is `D = L(P+Q) − L(P) − L(Q) mod (p−1)` non-uniform?
+A homomorphism would force `D ≡ 0`; any bias could in principle be amplified.
+p-values across 9 curves: 0.042 … 0.937, with a pairing-destroyed control at
+0.122 … 0.943. **Uniform.**
+
+**T3 — machine search over candidate maps** (`x`, `y`, `xy`, `x+y`, `x²`, `x³`, `y/x`,
+`log x`, `log y`, `log(xy)`, `x mod 1009`, `χ(x)`), scored by the information
+`H(f(P+Q)) − H(f(P+Q) | f(P), f(Q))`. Every map on every curve returns
+**+0.0236 to +0.0246 bits out of 4.000** — flat across maps, which is the signature of
+estimator bias, not signal. The plug-in conditional-entropy bias for 256 joint bins at
+`N = 120000` is `(256·16 − 256)/(2N ln 2) = 0.023` bits, matching to three digits.
+**No map leaks anything.**
+
+**T1 — direct transfer, and the third statistics bug I caught in my own work.**
+The raw test "is `L(kG)` dependent on `k`" returned `p = 1.6e-7, 2.1e-5, 4.4e-5` on the
+three 20-bit curves — and nothing at 22 or 24 bits. Vanishing with size is the
+signature of an artifact, so it was treated as a bug.
+
+It is one. Sampling **any** deterministic table with replacement inflates χ² by about
+`N·dof/n` regardless of the table's content. Predicted excess and measured outcome:
+
+| curve | n | predicted χ² excess | predicted z | real p | **random-bijection control p** |
+|---|---|---|---|---|---|
+| c20_0 | 524269 | 234.2 | 5.18 | 1.64e-7 | **2.56e-10** |
+| c20_1 | 533887 | 229.9 | 5.08 | 2.13e-5 | **1.08e-7** |
+| c20_2 | 541543 | 226.7 | 5.01 | 4.36e-5 | **3.26e-4** |
+| c22_* | ≈2.1e6 | 58.3 | 1.29 | 0.07 … 0.42 | 0.003 … 0.73 |
+| c24_* | ≈8.4e6 | 14.6 | 0.32 | 0.12 … 0.46 | 0.46 … 0.92 |
+
+Replacing the real discrete-log table with a **random bijection** reproduces the effect
+and at c20_0 exceeds it (`p = 2.6e-10` vs `1.6e-7`). The predicted artifact size
+matches the observed pattern at every size, including its disappearance as `n` grows.
+**There is no transfer through `log_g x(kP)`.** The control is now a permanent part of
+the test.
+
+*Method note.* This is the third time in this program that a naive statistic
+manufactured a "discovery" (after the resampling bug and the tie-degenerate binning in
+N1). All three were caught by the same rule: **every test ships with a control built
+to satisfy the null.** Without the random-bijection control this one would have read
+as a 5σ transfer result on the smallest curves.
