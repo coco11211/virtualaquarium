@@ -58,5 +58,45 @@
   "solved": true,
   "correct": true,
   "n": 313
+ },
+ {
+  "bits": 10,
+  "curve": "c10_0",
+  "target": 0,
+  "seconds": 353.1610075540002,
+  "status": "sat",
+  "solved": true,
+  "correct": true,
+  "n": 547
+ },
+ {
+  "bits": 10,
+  "curve": "c10_0",
+  "target": 1,
+  "seconds": 245.92012006300047,
+  "status": "sat",
+  "solved": true,
+  "correct": true,
+  "n": 547
+ },
+ {
+  "bits": 10,
+  "curve": "c10_0",
+  "target": 2,
+  "seconds": 260.543517219,
+  "status": "sat",
+  "solved": true,
+  "correct": true,
+  "n": 547
+ },
+ {
+  "bits": 11,
+  "curve": "c11_0",
+  "target": 0,
+  "seconds": 420.27228202900005,
+  "status": "unknown",
+  "solved": false,
+  "correct": false,
+  "n": 1093
  }
 ]

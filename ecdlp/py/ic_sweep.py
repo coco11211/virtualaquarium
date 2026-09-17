@@ -17,7 +17,7 @@ CONFIGS = [
     (2, 1, "k=2, j=1 (meet-in-the-middle)", 28, 10 ** 6, 4000),
     (3, 2, "k=3, j=2 (2-sum table)",        36, 2 * 10 ** 7, 5000),
     (4, 2, "k=4, j=2 (2-sum table)",        36, 2 * 10 ** 7, 5000),
-    (6, 3, "k=6, j=3 (3-sum table)",        38, 1 * 10 ** 7, 300),
+    (6, 3, "k=6, j=3 (3-sum table)",        36, 4 * 10 ** 7, 400),
 ]
 
 
@@ -36,6 +36,7 @@ def run(k, j, label, maxbits, memcap, mcap, ntarget=3, tag=""):
         best = None
         for m in mgrid(cur.n, j, memcap, mcap):
             ops, secs, okall = [], [], True
+            comp = dict(fb=[], tab=[], rel=[], la=[], targets=[], relations=[], tabsz=[])
             for i, t in enumerate(tgts):
                 r = IC.solve(cur, t.Q, m, k, j, seed=31 + 101 * i,
                              max_targets=1 << 40)
@@ -43,11 +44,16 @@ def run(k, j, label, maxbits, memcap, mcap, ntarget=3, tag=""):
                     okall = False
                     break
                 ops.append(r["total_ops"]); secs.append(r["seconds"])
+                comp["fb"].append(r["fb_ops"]); comp["tab"].append(r["tab_ops"])
+                comp["rel"].append(r["rel_ops"]); comp["la"].append(r["la_ops"])
+                comp["targets"].append(r["targets"]); comp["relations"].append(r["relations"])
+                comp["tabsz"].append(r["table_size"])
             if not okall:
                 continue
             rec = dict(curve=cur.name, bits=cur.bits, n=cur.n, k=k, j=j, m=m,
                        mean_ops=statistics.mean(ops), mean_sec=statistics.mean(secs),
-                       ntarget=len(ops))
+                       ntarget=len(ops),
+                       **{f"mean_{q}": statistics.mean(v) for q, v in comp.items()})
             rows.append(rec)
             if best is None or rec["mean_ops"] < best["mean_ops"]:
                 best = rec

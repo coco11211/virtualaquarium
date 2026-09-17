@@ -396,37 +396,95 @@ which algebraic structure could have helped — sparsity induced by the structur
 
 ---
 
-## IC1 — INDEX CALCULUS, BUILT AND MEASURED (partial: `k = 2`)
-**Status:** IN PROGRESS (`k=3`, `k=6` running) · **Verdict so far: DEAD** · **Date:** 2026-09-17
-**Data:** `ecdlp/data/ic_sweep_k*.json` · **Code:** `ecdlp/csrc/indexcalc.c`,
-`ecdlp/csrc/wiedemann.c`, `ecdlp/py/ic_sweep.py`
+## IC1 — INDEX CALCULUS, BUILT AND MEASURED
+**Status:** COMPLETE · **Verdict: DEAD** · **Date:** 2026-09-17
+**Data:** `ecdlp/data/ic_sweep_k*.json`, `ic_comp_k*.json`, `ecdlp/results/ic_projection.json`
+**Code:** `ecdlp/csrc/indexcalc.c`, `ecdlp/csrc/wiedemann.c`, `ecdlp/py/{ic_sweep,ic_recomp,project,figure}.py`
 
 Rather than argue about index calculus over prime fields, it is **built and run**: a
 complete working attack that solves real ECDLP instances on the toy curves, with every
-cost counted — factor base construction, sum-table construction, relation search, and
-linear algebra.
+cost counted — factor base, sum table, relation search, and linear algebra.
 
 - Factor base: the `m` points of smallest x-coordinate (public, canonical).
 - Decomposition: a precomputed table of all `j`-fold sums, then enumeration of the
-  remaining `k−j` with signs; working in `E/{±1}` so the table covers a sum and its
+  remaining `k−j` with signs, working in `E/{±1}` so the table covers a sum and its
   negative at once.
-- Linear algebra: **sparse Wiedemann** over `F_n` (`ecdlp/csrc/wiedemann.c`), measured
-  at `26·C²` field operations with a stable constant across sizes. Dense elimination
-  would have been `Θ(C³)` and would itself have dominated the very scaling being
-  measured — using it would have produced a meaningless number.
-- Correctness: every instance solved and verified against the sealed target, for
-  `(k,j) ∈ {(2,1),(3,2),(4,2)}` on 20/22/24-bit curves.
+- Linear algebra: **sparse Wiedemann** over `F_n`, measured at `26·C²` field operations
+  with a stable constant. Dense elimination is `Θ(C³)` and would have dominated the very
+  scaling being measured — using it would have produced a meaningless number.
+- Correctness: every instance solved and verified against the sealed target; `crosscheck.py`
+  confirms rho and index calculus agree on 24/24 hidden targets.
 
-Cost model (derived, then measured): `total ≈ m^j + n·m^{1−j} + 26m²`, optimised at
-`m = n^{1/(2j−1)}` giving `n^{j/(2j−1)}` — which tends to `n^{1/2}` **from above** and,
-for every finite `j`, needs `n^{j/(2j−1)}` *memory* where rho needs almost none.
+**Measured, 3 hidden targets per point, `m` swept at every size:**
 
-**Measured, `k = 2, j = 1`, 5 sizes (20–28 bits), 3 hidden targets each, m swept:**
+| config | sizes | fitted total exponent | r² | asymptote |
+|---|---|---|---|---|
+| `k=2, j=1` | 20–28 (5) | **0.9770** | 0.9991 | 1 |
+| `k=3, j=2` | 20–36 (9) | **0.6047** | 0.9977 | 2/3 |
+| `k=6, j=3` | 20–36 (9) | **0.4645** | 0.9944 | 3/5 |
+
+**The `k=6` number is below 0.5 and is NOT a win.** It is the `m²` linear-algebra term,
+which has the *smallest* asymptotic exponent of the three (`2/(2j−1) = 0.4` versus `0.6`)
+and still dominates at toy sizes. Three independent checks establish this:
+
+1. **Component shares** (measured separately, not derived). For `k=6`, linear algebra
+   falls from **75.0% → 20.8%** of total cost between 20 and 36 bits while the 3-sum table
+   rises from **7.8% → 40.6%**. The `n^0.6` terms are visibly taking over.
+2. **Per-component exponents** match the model: table `n^0.6214` (model 0.600), relations
+   `n^0.5309` (0.600), linear algebra `n^0.3518` (0.400).
+3. **The local exponent rises through 0.5 inside the measured range.** Fitting the first
+   four sizes vs the last four:
+
+| config | first 4 sizes | last 4 sizes | asymptote |
+|---|---|---|---|
+| `k=3, j=2` | 0.5300 | **0.6444** | 0.6667 |
+| `k=6, j=3` | 0.3858 | **0.5302** | 0.6000 |
+
+**256-bit projections** from the three-term model `A·m^j + B·n·m^{1−j} + C·m²`, with `A`,
+`B`, `C` fitted to their own component measurements (well conditioned, 15–17% mean
+relative error) and then minimised over `m`:
+
+| config | fitted A / B / C | effective exponent 2^128→2^256 | at 256 bits | vs rho |
+|---|---|---|---|---|
+| `k=2, j=1` | 1661 / 1.90 / 0 | 1.0000 | `2^256.9` | 2^129.9 worse |
+| `k=3, j=2` | 1.02 / 1.65 / 31.4 | 0.6667 | `2^173.7` | 2^46.7 worse |
+| `k=6, j=3` | 0.355 / 20.1 / 66.6 | 0.6000 | `2^156.6` | **2^29.5 worse** |
+
+(theory: `A ~ 1/j!`, `C ~ 26` — both recovered within a factor of 2, which is the check
+that the fitted model is the physical one.)
+
+The projections `2^257 → 2^174 → 2^157` approach rho's `2^127.8` **from above** exactly as
+`n^{j/(2j−1)} → n^{1/2}` predicts, and never cross. Larger `j` also demands
+`n^{j/(2j−1)}` *memory*, where rho needs essentially none.
+
+---
+
+## SAT1 — SAT/SMT SCALING
+**Status:** COMPLETE · **Verdict: DEAD** · **Date:** 2026-09-17
+**Data:** `ecdlp/data/sat_scaling.json` · **Code:** `ecdlp/py/sat_scaling.py`
+
+Non-generic structure: the bit-level circuit representation of `F_p` arithmetic, which a
+generic-group algorithm cannot see. The encoding is deliberately the friendliest honest
+one — Z3 bitvectors, all multiples `2^i·G` **precomputed as constants**, an affine
+addition chain with division replaced by the multiplication constraint
+`λ·(x₂−x₁) = y₂−y₁`, so the solver is handed the whole algebraic structure and only has
+to find `bits` boolean unknowns. Toy curves of 8–19 bits were generated for this
+(`ecdlp/data/curves_small.json`), all with the same prime-order, `j = 0` structure.
+
+| bits | median seconds | correct |
+|---|---|---|
+| 8 | 12.2 | 3/3 |
+| 9 | 87.6 | 3/3 |
+| 10 | 260.5 | 3/3 |
+| 11 | hit the 420 s wall | — |
 
 ```
-ops = 2^1.21 · n^0.9770        r² = 0.9991      (predicted exponent 1.0)
+fit:  log2(seconds) = 2.2059 · bits − 13.823
 ```
 
-versus rho's measured `n^0.5072`. At 28 bits index calculus needs `2.14·10^8`
-operations where rho needs `5.9·10^3` — a factor of 36000, and the gap grows as
-`n^0.47` per size step.
+**Slope 2.21 bits⁻¹**, against 1.0 for brute force and 0.5 for rho. Projection to 256
+bits: `2^550.9` seconds. A bit-level solver is worse than brute force by more than a
+factor of two *in the exponent*; giving it the full algebraic structure does not help.
+The ablation arms (special-prime shape, `λ` constraint, ladder encoding) are queued in
+`IDEA_QUEUE.md` as the part that could still surprise — a slope *shift* would be a real,
+if small, non-generic effect.
