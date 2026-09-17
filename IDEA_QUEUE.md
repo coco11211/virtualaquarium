@@ -1,219 +1,172 @@
 # IDEA_QUEUE.md — ranked attack queue
 
 Pull the next idea from the top. Re-rank after every verdict.
-Ranking criterion: **information per unit cost** first, then genuine non-genericity, then
-probability of an asymptotic win, then cheapness.
+Ranking criterion: **information per unit cost** first, then genuine non-genericity,
+then probability of an asymptotic win, then cheapness.
 
 Tags: `[E]` established · `[H]` heuristic · `[S]` speculation.
+Source: `seed` = written at session start; `gen:<surface>` = from the multi-agent idea
+sweep (47 ideas across 8 surfaces, `ecdlp/data/wf_ideas_raw.json`).
 
 ---
 
 ## The accounting that drives the ranking
 
-Index calculus with factor base `F`, `|F| = m`, `k`-term decompositions `R = ±P₁ ± … ± Pₖ`:
+Index calculus with factor base `F`, `|F| = m`, `k`-term decompositions:
 
-- `Pr[random R decomposes] ≈ (2m)^k / (k!·n)`  `[E]` (counting)
-- relations needed ≈ `m`; decomposition-oracle cost `D`
-- relation cost ≈ `m · k!·n/(2m)^k · D = Θ(n·D/m^{k-1})`
-- sparse linear algebra ≈ `Θ(m²)`  `[E]`
-- balance ⇒ `m = (nD)^{1/(k+1)}`, **total cost `(nD)^{2/(k+1)}`**  `[E]`
+- `Pr[random R decomposes] ≈ (2m)^k / (k!·n)`  `[E]`
+- relation generation by guess-and-check costs `Θ(n)` **in total, for every `m` and `k`** —
+  each probe succeeds with probability `m/p` and we need `m` successes. So a win
+  requires a genuine **decomposition oracle**.
+- with an oracle of cost `T`: `total = m·T + m²`, and decompositions must exist
+  (`m ≳ n^{1/k}`), so beating `n^{1/2}` needs `T < n^{1/2}/m`.
+- writing `T = m^θ`: **a win needs `θ ≤ k−3`. Brute force is `θ = k−1`.**
+  So any winning oracle must beat brute force by **two full exponent units in `m`**,
+  at every `k`.
 
-With a *perfect* oracle `D = polylog`: `k=3 → n^{1/2}` (ties rho), `k=4 → n^{2/5}`,
-`k=5 → n^{1/3}`. **So a win needs `k ≥ 4` AND `D` far below brute force.**
-Brute force is `D ≈ m^{k-1}`, which makes the total `Θ(n)` — worse than rho. `[E]`
+Two oracle families are known, and both are now measured:
 
-Over `F_{q^n}` Gaudry/Diem achieve small `D` because Weil descent turns the single Semaev
-equation into `n` equations over `F_q`, making the system square and Gröbner-solvable.
-**`F_p` has no proper subfield and no `F_q`-linear subspace, so there is no descent. `D` is
-the entire game.** Every index-calculus idea below is really a proposal for a substitute
-structure that shrinks `D`. Rank accordingly.
+| family | best known `θ` | resulting exponent | measured? |
+|---|---|---|---|
+| combinatorial (birthday / meet-in-the-middle with a `j`-sum table) | `j`, giving `n^{j/(2j−1)}` | → `1/2` **from above**, never below | **yes — IC1** |
+| Wagner k-tree (needs a filtration) | would give `n^{2/(l+1)}`, i.e. `n^{2/5}` at `l=4` | **would beat rho** | **yes — K1: no filtration exists** |
+| algebraic (eliminant / resultant) | `k−1` (the eliminant is dense) | `Θ(n)` | **yes — IC2** |
+
+---
+
+## CLOSED — verdicts recorded in ATTACK_LOG.md
+
+| id | idea | verdict | what killed it |
+|---|---|---|---|
+| `F0` | rho baseline | n/a | measured `n^0.5072`, `r²=0.998`, matches `√(πn/12)` |
+| `NULL-BATTERY` (N1-A) | any leak from `k` into `x(kP)` | **DEAD** | 2028 χ² tests, 0 pass Bonferroni; the calibrated control passes 1 |
+| `MULT-SUBGROUP-BIAS` (N1-B) | `μ_m` as a better-than-random factor base | **DEAD** | deviation `∝ m^{−0.589}`; sampling noise is `−0.5`; shrinks with `m` |
+| `RHO-LSH` (N1-C) | coordinate-metric nearest neighbours beat birthday | **DEAD** | no translation distortion under any metric; permutation null |
+| `KTREE-FILTRATION` (K1) | Wagner k-tree via coordinate predicates | **DEAD** | `ρ = 1.00` for every predicate; `Z_n` control returns `ρ = 2050` vs theory 2048; the sumset of a structured set is indistinguishable from uniform |
+| `SMOOTH-POINTS` (N2) | integer smoothness of `x` as a group-compatible notion | **DEAD** | 540669 pairs, `ρ = 1.028`; the control deviates more |
+| `SNFS-ANALOGUE` / `XEDNI-CM` (L1) | lifting to characteristic 0 | **DEAD** | `E(Q) = {O}` for `y²=x³+7` (four independent verifications); 0 dependencies in 1080 xedni lifts |
+| `HOM-SEARCH` (T1) | transfer via `log_g x(P)` in `F_p^*` | **DEAD** | quasi-homomorphism defect uniform; 12-map machine search finds only estimator bias; the apparent 5σ result was a sampling artifact reproduced by a random bijection |
+| `IC-ELIMINANT` (IC2) | algebraic decomposition oracle | **DEAD** | eliminant density `1.000`, `nnz ∝ m^1.956`, `μ_m` identical to random |
+| `IC-BUILD` (IC1) | index calculus, actually built | **DEAD** at `k=2` | measured `n^0.9770`, `r²=0.999` |
+| `LATTES-DYNAMICS` | functional-graph anomalies of the Lattès walk | **DEAD** (indirect) | rho's measured constant matches random-map theory to a few % at every size — the walk *is* random-like |
+| `COVER-GENUS` | higher-genus covers | **DEAD** (analytic) | a degree-`d` cover has `#Jac ≈ p^g`; index calculus there costs `Õ(p^{2−2/g}) > p^{1/2}` for every `g ≥ 2`. Descent needs a *smaller field*; `F_p` has none |
+| `ANOMALOUS-ESCAPE` | p-adic elliptic log when `#E ≠ p` | **DEAD** (analytic) | `v = k·u + n·w` with `u,v,w ∈ pZ_p`; dividing by `p` leaves `n·(w/p)` unknown mod `p` unless `p | n`. Information is recoverable mod `p`, the scalar lives mod `n`; they coincide only for anomalous curves |
 
 ---
 
-## Queue
+## LIVE QUEUE
 
-### 1. `IC-SEMAEV-D` — measure the decomposition-oracle cost `D` for structured factor bases over `F_p`
-**Surface:** 1+2. **Non-generic structure:** the x-coordinate lives in `F_p`; Semaev's `S_{k+1}`
-is an explicit polynomial relation among x-coordinates — pure coordinate structure, invisible
-to a generic-group algorithm.
-**Hypothesis `[S]`:** for some algebraically-structured `S ⊂ F_p` (multiplicative subgroup
-`μ_m`; roots of a sparse polynomial; an interval), the decomposition problem
-`∃ x_i ∈ S : S_{k+1}(x₁,…,x_k,x_R)=0` is solvable in `o(m^{k-1})`.
-**Prior work:** Semaev 2004 (summation polynomials); Gaudry 2009 and Diem 2011 (index calculus
-over extension fields) — both need `F_{q^n}`, `n>1`. `SEARCH: "summation polynomials prime
-field index calculus" "Semaev prime field obstruction"`.
-**What is different:** we are not claiming a descent; we are *measuring* whether specific
-algebraic factor bases admit sub-brute-force elimination (product-tree resultants for `μ_m`,
-structured Gröbner for sparse-root sets).
-**First experiment:** implement `S₃, S₄, S₅` for `y²=x³+7`; for `S = μ_m` compute
-`Res_{x_k}(S_{k+1}, x_k^m − 1)` by product tree in `Õ(m)`; measure wall-clock `D` vs `m` for
-`k=2,3,4` on 20–48 bit curves; fit the exponent of `D` in `m`.
-**Kill:** fitted `D ∝ m^{k-1±0.1}` for every `S` tried ⇒ that `S` is DEAD.
-**Cost:** hours–days.
+### 1. `IC-SWEEP-FINISH` — finish the measured index-calculus curve at `k=3,4,6`
+**Source:** seed · **Cost:** running · **Why top:** it is the mission's central artifact —
+a real attack, measured across sizes, plotted against rho. `k=2` is in (`n^0.977`);
+`j=2` should land near `n^{2/3}` and `j=3` near `n^{3/5}`, demonstrating the approach to
+`n^{1/2}` **from above** empirically rather than by assertion.
+**Kill:** all fitted exponents `≥ 0.5` ⇒ the combinatorial family is closed with data.
 
-### 2. `SEMAEV-COPPERSMITH` — quantify the small-root threshold for interval factor bases
-**Surface:** 2+8. **Non-generic structure:** integer-size (archimedean) structure of
-representatives in `[0,p)` — meaningless in a generic group.
-**Hypothesis `[S]`:** taking `S = [0,B]` turns decomposition into a multivariate modular
-small-root problem; Coppersmith/LLL might solve it for `B` large enough to be a useful
-factor base.
-**Prior work `[E]`:** Coppersmith 1996; Jochemsz–May 2006 (multivariate strategy).
-Semaev `S_m` has degree `2^{m−2}` in each variable — very high, so the small-root bound is
-brutal. `SEARCH: "Coppersmith summation polynomial elliptic curve small roots"`.
-**What is different:** nobody seems to have published the *measured* threshold; we produce the
-number instead of asserting it.
-**First experiment:** for `k=2,3`, build the Jochemsz–May lattice for `S_{k+1} ≡ 0 (mod p)`
-with root bounds `B`; measure the largest `B` for which LLL recovers a planted root, on
-24–48 bit `p`; compare with the `B = m ≈ n^{1/(k+1)}` that index calculus needs.
-**Kill:** measured achievable `B ≤ p^{0.1}` while `n^{1/(k+1)} ≥ p^{0.2}` ⇒ DEAD, with the
-gap quantified in exponent units.
-**Cost:** days.
+### 2. `MU6-GRADED-SEMAEV` — does the `j=0` symmetry lower the solving degree?
+**Source:** `gen:semaev` + `gen:cm-j0` · **Cost:** days · **Non-generic:** the order-6
+automorphism group acts on `S_m`; the quotient of `E` by `⟨ω⟩` is rational, so the
+Weber coordinate `u = x³` is a genuine change of the polynomial system.
+**Hypothesis `[S]`:** re-grading Semaev systems by `μ_6`-invariants lowers the first-fall
+/ solving degree by ~3 per variable.
+**Why it survives IC2:** IC2 measured the *eliminant*, not the Gröbner solving degree.
+This is the one algebraic quantity still unmeasured.
+**Experiment:** build `S_3, S_4` in `u = x³`, measure the degree of regularity and the
+solving exponent for the decomposition system, symmetrised vs not, over 5 sizes.
+**Kill:** solving exponent `≥ (k−1)−0.1` in both encodings, or no degree drop.
 
-### 3. `SPECIAL-PRIME-TADIC` — is `p = 2²⁵⁶ − 2³² − 977` a descent substitute?
-**Surface:** 4. **Non-generic structure:** `p = f(t)` at `t = 2³²` for `f(T)=T⁸−T−977`, so
-`F_p` is a quotient of `Z[T]/(f)`; every element has a base-`2³²` digit vector, and reduction
-is the linear rule `2²⁵⁶ ≡ 2³² + 977`. This is a rank-8 `Z`-module structure with small
-generators — the closest thing `F_p` has to a vector space over a subfield.
-**Hypothesis `[S]`:** `S_D = {x : all t-adic digits < D}` behaves as a "linear" factor base;
-substituting digit variables into `S_{k+1}` gives a system in `8k` small unknowns over `Z`
-with carries, attackable by lattice reduction.
-**Prior work `[E]`:** SNFS works for `F_p^*` precisely because of this structure; the elliptic
-analogue has never been made to work because `E(F_p)` has no height-controlled lift.
-**What is different:** we bypass lifting entirely — the structure is used for the factor base,
-not for a lift.
-**Blocker:** needs toy curves over *special-shape* primes. **Build those first.**
-**First experiment:** generate `p = t^k − t − c`, `t = 2^s`, prime, `p ≡ 1 mod 3`,
-`#E(y²=x³+7)` prime, at 24–60 bits; then measure decomposition counts and `D` for `S_D`.
-**Kill:** decomposition counts for `S_D` match a random set of the same size AND `D` shows no
-improvement over brute force ⇒ DEAD.
-**Cost:** days.
+### 3. `U3-QUADRATIC-PHASE` — Fourier-analytic search above the linear level
+**Source:** `gen:wild` · **Cost:** days · **Non-generic:** characters of the coordinate
+representation. **Established `[E]`:** linear Fourier is dead — Weil gives square-root
+cancellation for `χ(x(kP))`, which is exactly what N1 measured.
+**Hypothesis `[S]`:** the quadratic (Gowers `U³`) level is not covered by that bound;
+a large `U³` norm would be a genuine structural finding.
+**Experiment:** estimate `‖f‖_{U³}` for `f(k) = χ(x(kG))` at `n = 2^20…2^26` with a
+permutation-calibrated null; also the largest Fourier coefficient of the derivative
+`Δ_h f`. **Kill:** every statistic inside the control's 99.9th percentile with no
+trend in `n`.
 
-### 4. `NULL-BATTERY` — measure representation-level non-randomness (guards against self-deception)
-**Surface:** 7+8. **Non-generic structure:** the bit/field representation of `x(kP)`.
-**Hypothesis `[S]`:** some cheap statistic of `x(kP)` correlates with `k`. Expected result:
-exactly none. Value is in mapping the space and in having a calibrated null.
-**Tests:** (a) empirical mutual information between low/high bits of `k` and bits of `x(kP)`;
-(b) does `x(kP)` land in small multiplicative subgroups of `F_p^*` more often than random?
-(c) Legendre-symbol sequence `χ(x(kP))` vs a random binary source; (d) t-adic digit bias on
-special-shape primes; (e) is `x((k+1)P) − x(kP)` distributed differently from random?
-**Kill:** all statistics within the calibrated null band ⇒ this class is DEAD (and we get a
-calibration we can reuse to test future "surprises").
-**Cost:** hours.
+### 4. `PREPROCESSING-ADVICE` — can coordinate-based advice beat `ST² = Θ(n)`?
+**Source:** `gen:ml-sat` · **Cost:** weeks · **Non-generic:** the advice is computed from
+and queried against the explicit representation. **`[E]`:** the generic preprocessing
+trade-off `ST² = Θ̃(n)` (Corrigan-Gibbs–Kogan; Mihalcik; Bernstein–Lange) is proved in the
+generic model only. **Hypothesis `[S]`:** a *learned* advice string exploiting the
+coordinate structure beats it. **Experiment:** at 20–30 bits, compare a learned advice
+arm against a classical table arm at equal storage, fit the `S` vs `T` slope.
+**Kill:** fitted slope `≥ −0.55` at every size and the learned arm never beats the table.
 
-### 5. `RHO-LSH` — sub-√n collision search via coordinate-metric nearest neighbours
-**Surface:** 8. **Non-generic structure:** the coordinate map gives a metric on points;
-generic groups have none.
-**Hypothesis `[S]`:** if some metric `d` on `E(F_p)` satisfied `d(P+R, Q+R) ≈ d(P,Q)`
-(approximate translation invariance), a locality-sensitive hash would let us detect *near*
-collisions and amortise, beating the birthday bound.
-**Why it should fail `[H]`:** the group law is an algebraic map of degree 2 in the
-coordinates; it is provably far from an isometry for any natural metric.
-**First experiment:** directly measure translation-distortion: for random `P,Q,R`, the
-distribution of `d(P+R,Q+R)` given `d(P,Q)`, for `d` = |Δx|, Hamming on bits, and t-adic
-digit distance. A non-trivial correlation would be a genuine finding.
-**Kill:** measured mutual information between `d(P,Q)` and `d(P+R,Q+R)` indistinguishable
-from zero at 5σ ⇒ DEAD.
-**Cost:** hours.
+### 5. `EISENSTEIN-BALL` — the automorphism-invariant lattice factor base
+**Source:** `gen:semaev` · **Cost:** days · **Non-generic:** `F_p ≅ Z[ω]/π`, and
+multiplication by `ω` (= `β` on x-coordinates) is an **isometry** of the Eisenstein
+lattice, so a norm ball is simultaneously a factor base and automorphism-stable.
+**Status:** partially pre-killed — K1 already measured the automorphism-invariant
+interval predicate `orbmin(x) < p/2^d` at `ρ = 1.002`. The lattice-ball version is a
+2-D rather than 1-D variant of the same thing.
+**Experiment:** add the Eisenstein ball to the K1 predicate battery and to the Group B
+hit-rate test. **Kill:** `ρ = 1` and null hit rate (expected).
 
-### 6. `CM-LATTICE` — is `E(F_p) ≅ Z[ω]/(π)` exploitable beyond GLV?
-**Surface:** 3. **Non-generic structure:** `End(E) = Z[ω]`; Frobenius `π` has `N(π)=p`.
-**Hypothesis `[S]`:** representing scalars in `Z[ω]` gives a rank-2 lattice picture in which
-the DLP becomes a closest-vector-style problem.
-**Why it probably fails `[E]`:** GLV already gives `k = k₁ + k₂λ` with `k₁,k₂ ≈ √n`; searching
-that box is `n` work and BSGS on it is `√n` — exactly rho. A change of basis cannot beat
-Shoup unless it supplies an oracle linking lattice distance to group data, which it does not.
-**What would have to be true:** some efficiently computable function of `Q` alone that
-constrains `(k₁,k₂)` to a sublattice or a short-vector region.
-**First experiment:** exhaustively test, on 20–28 bit curves, whether any of a battery of
-cheap functionals of `Q` correlates with `k₁` or `k₂` (reuse the NULL-BATTERY machinery).
-**Kill:** no correlation ⇒ DEAD.
-**Cost:** hours.
+### 6. `SAT-ABLATION` — does structure help a bit-level solver at all?
+**Source:** seed + `gen:ml-sat` · **Cost:** hours · **Status:** base measurement running
+(`SAT1`). The ablation arms — special-prime shape, `λ` constraint, ladder encoding —
+are the part that could surprise: if any ablation *shifts the slope*, that is a real
+(if small) non-generic effect. **Kill:** slope unchanged by `< 0.05` bits⁻¹ across arms.
 
-### 7. `COVER-GENUS` — close the cover/correspondence surface with numbers
-**Surface:** 6. **Claim to verify `[E]`:** if `C → E` is a degree-`d` cover over `F_p` with
-`g(C)=g`, then `#Jac(C)(F_p) ≈ p^g`, and Gaudry–Thomé–Thériault–Diem index calculus costs
-`Õ(p^{2−2/g})` for `g ≥ 3`, which exceeds `√p` for every `g ≥ 3`. Descent helps only when a
-*smaller field* exists to descend to; `F_p` has none.
-**First experiment:** produce the table of `p^{2−2/g}` vs `√p` for `g = 2…10` and state the
-break-even; verify the Jacobian-size claim on toy covers.
-**Kill:** table confirms ⇒ surface CLOSED with a citable number.
-**Cost:** hours.
+### 7. `POINT-TO-CLASS-GROUP` — a partial map to a group with subexponential DLP
+**Source:** `gen:transfer` · **Cost:** days · **Non-generic:** class-group arithmetic.
+**Hypothesis `[S]`:** some `Ψ` computable from coordinates is multiplicative on a
+noticeable fraction of triples. **Why it is not already dead:** T1 tested `F_p^*` only.
+**Kill:** every candidate is constant or fails `Ψ(R+S)=Ψ(R)Ψ(S)` on more than a `1/h`
+fraction — i.e. behaves like a random function.
 
-### 8. `SAT-SCALING` — measure the real SAT/SMT exponent on ECDLP
-**Surface:** 7. **Non-generic structure:** bit-level circuit representation of `F_p` arithmetic.
-**Hypothesis `[S]`:** the exponent is ~1 (brute force) or worse. Measure it.
-**First experiment:** encode `kG = Q` as CNF for 12–28 bit curves (double-and-add circuit),
-run a modern SAT solver, fit `log(time)` vs bits; also test whether adding the endomorphism
-constraint or a special-shape prime changes the slope.
-**Kill:** slope ≥ 0.5 bits⁻¹ in `log₂ time` (i.e. ≥ `√n`) with no improvement from structure ⇒ DEAD.
-**Cost:** hours–days.
+### 8. `CONDUCTOR-VOLCANO` — the isogeny class as a search space
+**Source:** `gen:cm-j0` · **Cost:** days · **`[E]`:** isogenies preserve group order, so no
+direct win. **Hypothesis `[S]`:** some curve in the `F_p`-isogeny class has an encoding
+with lower measured rho cost (a constant-factor engineering result at best).
+**Kill:** measured rho cost `≥` the `j=0` baseline on every reachable curve.
 
-### 9. `XEDNI-CM` — Silverman's xedni, re-run with `j=0` CM lifts
-**Surface:** 5. **Non-generic structure:** lifting to characteristic 0.
-**Prior work `[E]`:** Silverman 1998 (xedni calculus); Jacobson–Koblitz–Menezes–Stein–Teske
-1999/2000 analysis showing it fails — lifted points are independent with probability ≈ 1 and
-the canonical heights are too large.
-**What is different `[S]`:** restrict to CM curves `y²=x³+b` over `Q`, where Mordell–Weil
-ranks and height pairings are much better understood, and ask whether the CM structure raises
-the probability of a low-height lift. Expected: no, because the obstruction is the
-Birch–Swinnerton-Dyer-scale size of generators, not the curve family.
-**First experiment:** for toy `p`, lift `r` points to `y²=x³+b` over `Q` by Silverman's recipe
-and measure the empirical distribution of canonical heights and the rank of the lifted points
-vs `r`; compare with the JKMST prediction.
-**Kill:** measured rank = `r` (independent) with the predicted probability ⇒ DEAD, quantified.
-**Cost:** days.
+### 9. `ELLIPTIC-NET-2D` — inverting a bilinear recurrence over `Z[ω]`
+**Source:** `gen:transfer` · **Cost:** days · **Non-generic:** the EDS/division-polynomial
+bilinear identity is an algebraic relation on coordinates. **Hypothesis `[S]`:** the
+rank-2 `Z[ω]` index lattice substitutes for descent. **Kill:** solving degree grows
+linearly in the number of unknown digits ⇒ never better than `√n`.
 
-### 10. `ANOMALOUS-ESCAPE` — is there any variant of the p-adic elliptic log for `#E ≠ p`?
-**Surface:** 5+6. **Established `[E]`:** Smart / Satoh–Araki / Semaev, 1997–1999: for
-anomalous curves (`#E = p`) the formal-group logarithm on `E(Q_p)` solves the DLP in
-polynomial time. secp256k1 is not anomalous.
-**Precise obstruction to attack `[E]`:** the kernel of `E(Z/p²) → E(F_p)` is `p`-torsion;
-multiplying by `#E` (coprime to `p`) lands in that kernel only when `p | #E`.
-**First experiment:** implement the anomalous attack, verify it on a purpose-built anomalous
-toy curve, then measure precisely what breaks as `#E` moves away from `p`. Produces a clean
-boundary and a reusable p-adic toolkit.
-**Kill:** no variant recovers information once `gcd(#E, p) = 1` ⇒ DEAD, with the mechanism shown.
-**Cost:** days.
+### 10. `CM-HEEGNER-ORBITS` — the only known source of many height-controlled points
+**Source:** `gen:special-prime` · **Cost:** weeks · Directly targets the gap L1 measured:
+`E(Q)` is trivial, but CM/Heegner orbits give exponentially many points of controlled
+height over class fields. **Kill:** the dlog function on `Cl(D)` is Fourier-flat and
+admits no relations beyond Euler-system ones.
 
-### 11. `ML-FACTORBASE` — machine-search the factor base
-**Surface:** 7+1. Search (evolutionary / SAT-guided) over parametrised families of `S` for one
-that maximises decomposition probability per unit of `D`. Only meaningful once `IC-SEMAEV-D`
-gives a measurement harness. **Kill:** best found `S` no better than random of equal size.
-
-### 12. `LATTES-DYNAMICS` — arithmetic dynamics of `x(kP)` on `P¹`
-**Surface:** 8. Multiplication-by-`m` on `E` descends to a Lattès map on `P¹`. Test whether
-iterate factorisation patterns, periodic-point structure, or the Galois theory of iterates
-gives any handle on `x(kP)=x(Q)`. **Kill:** no measurable structure beyond the known degree-`m²`
-rational map ⇒ DEAD.
-
-### 13. `J0-SYMMETRY-GROEBNER` — symmetrise Semaev systems under the order-6 automorphism group
-**Surface:** 2+3. The `j=0` automorphisms act on `S_{k+1}`; quotienting by the invariants may
-lower the Gröbner degree of regularity. **Kill:** measured degree of regularity unchanged.
-
-### 14. `ISOGENY-SCAN` — small-degree isogenies for `D = −3`
-**Surface:** 6. Isogenies preserve the group order, so no direct win `[E]`; scan anyway for any
-`ℓ`-isogeny whose kernel structure leaks information, and to have the modular machinery.
-**Kill:** order preserved and no side channel ⇒ surface CLOSED.
-
-### 15. `HNP-FREE-BITS` — is any partial information about `k` free?
-**Surface:** 8. Hidden-number-problem attacks are devastating *given* leaked bits. Measure
-whether any function of `Q` alone predicts any bit of `k` above chance. **Kill:** no ⇒ DEAD.
-
-### 16. `MULT-SUBGROUP-BIAS` — does `x(kP)` favour small multiplicative subgroups?
-**Surface:** 1+4. Directly tests whether `μ_m` is a *statistically* better factor base than a
-random set of the same size. Cheap. **Kill:** counts match random ⇒ DEAD.
-
-### 17. `SNFS-ANALOGUE` — characterise exactly what an elliptic SNFS would need
-**Surface:** 4+5. Write down the precise missing object (a lift of `E(F_p)` to a
-finitely-generated group with height control and small generators), then test the weakest
-sub-claim that could make it exist. **Kill:** sub-claim measurably false ⇒ surface CLOSED.
-
-### 18. `ENDO-FACTORBASE` — combine CM with index calculus
-**Surface:** 1+3. Use the `λ`-action to fold the factor base by 6 and to add relations
-`λP = βx` for free. Reduces `m` by a constant, not the exponent — but it also adds
-*equations*, which is what a descent substitute needs. Measure the effect on `D`.
-**Kill:** `D` exponent unchanged ⇒ DEAD as an exponent-level idea.
+### 11–18 (lower priority, one line each)
+- `SPARSE-LIMB-CP` `gen:index-calculus` — limb-sparse factor base for `p = 2^256−2^32−977`
+  attacked by constraint propagation. Kill: solver time `∝ |S|^{k−1}`.
+- `SEMAEV-SKEW-COPPERSMITH` `gen:index-calculus` — skewed multivariate Coppersmith on
+  `j=0` summation polynomials. Kill: recoverable exponent stays `≤ 1/4` while relations
+  need `≥ 1/(k+1)`. *(The exponent gap is large; see ATTACK_LOG's arithmetic.)*
+- `SPECIAL-P-CARRYFREE` `gen:semaev` — carry-free Weil restriction along `t^8−t−977`.
+  Kill: carry-free `|B| ≤ p^{1/4}` for `S_3`, `p^{1/12}` for `S_4`.
+- `LOCAL-DUALITY-TORSOR` `gen:lifting` — local Tate duality as a dlog functional.
+  Kill: the Miller value over `Q_p` is an `n`-th power in every case (pairing trivial).
+- `CANONICAL-LIFT-DIGITS` `gen:wild` — higher `p`-adic digits of the canonical lift.
+  Kill: digits statistically independent of `k` (the splitting argument in ATTACK_LOG's
+  `ANOMALOUS-ESCAPE` entry says they must be).
+- `ALPHA-MOD-PI-COTANGENT` `gen:cm-j0` — the cotangent scalar `α mod π`.
+  Kill: the étale/formal splitting is computable without `k`.
+- `MULTIPLICATIVE-COSET-LEAK` `gen:wild` — a multiplicative character of `k` would buy
+  `√(n/d)`. Kill: MI below `10^-3` bits at 24/28/32 bits with no trend. *(N1 already
+  covers the additive-character version.)*
+- `FOURIER-HEAVY-HUNT` `gen:ml-sat` — sparse recovery over bit-level coordinate
+  functions. Kill: peak inside `1.3×` the permutation-null band with no trend.
 
 ---
-*Seeded 2026-09-17. A parallel multi-agent literature/idea sweep is running; its output will be
-merged and the queue re-ranked.*
+
+## Ideas dropped as pre-killed by this session's measurements
+`fp-log-quasihom` (T1) · `detectable-difference-set` (K1 + N1-C) ·
+`lattes-orbit-graph` (F0's random-map agreement) · `xedni-cm-quantified` (L1) ·
+`mw-lift-height-vs-reduction` (L1) · `p-shape-distinguisher-battery` (N1-B, K1) ·
+`cm-height-oracle-probe` (N1-A: no coordinate statistic depends on the scalar, and the
+`Z[ω]`-norm is a function of the scalar) · `interval-factor-base-decomposition-exponent`
+(IC1 + IC2) · `mu3-character-gauss-sum-transfer` (N1-A included the cubic character;
+and `χ₃(x(λP)) = χ₃(β)χ₃(x(P))` is an identity relating `P` to `λP`, not to `k`).
+
+---
+*Updated 2026-09-17 after F0, N1, N2, K1, L1, T1, IC1 (partial), IC2.*
