@@ -188,3 +188,77 @@ representation. Wagner-style k-tree index calculus — the one route whose arith
 would put index calculus below `√n` — has no foothold on a prime-order elliptic curve.
 The single borderline signal (integer smoothness, ρ up to 4.0 at |z| = 3.0 on 5000
 pairs) is being re-run at 40× power as `N2`.
+
+---
+
+## L1 — LIFTING / SNFS-ANALOGUE: why there is no elliptic number-field sieve
+**Status:** COMPLETE · **Verdict: DEAD** (and sharper than expected) · **Date:** 2026-09-17
+**Data:** `ecdlp/data/lift_gap_1.json`, `lift_gap_2.json` · **Code:** `ecdlp/py/lift_gap.py`
+
+**Part 1 — the factor-base asymmetry, measured.**
+Index calculus in `F_p^*` works for one concrete reason: the factor base is
+`{primes ≤ B}`, of size `~B/log B`, and a group element's *integer representative*
+is decomposed by **factoring it** — subexponential, because `Z` has unique
+factorisation and the representative literally carries the group's multiplicative
+structure. The elliptic analogue of a prime is a Mordell–Weil generator, and `E(Q)`
+is finitely generated of small rank, so points of naive height `≤ H` number
+`~(log H)^{r/2}`, not `~H/log H`.
+
+Counted with PARI (`ellrank`, plus independent brute force over `x = a/c²`):
+
+| curve | rank over Q | pts of height ≤ 10² | ≤ 10³ | ≤ 10⁴ | ≤ 10⁵ | primes ≤ 10⁵ |
+|---|---|---|---|---|---|---|
+| **y² = x³ + 7  (secp256k1)** | **0** | **0** | **0** | **0** | **0** | 9592 |
+| y² = x³ + 1 | 0 | 5 | 5 | 5 | 5 | 9592 |
+| y² = x³ + 2 | 1 | 4 | 6 | 6 | 8 | 9592 |
+| y² = x³ + 3 | 1 | 4 | 4 | 6 | 6 | 9592 |
+| y² = x³ + 17 | 2 | 24 | 32 | 50 | 56 | 9592 |
+
+A 1000-fold increase in `H` multiplies the rank-2 point count by 2.3 (the
+`(log H)^{r/2}` law predicts 2.5) while multiplying the prime count by 384 (linear).
+**The factor base is polylogarithmic where the multiplicative one is linear.**
+
+**The headline fact** `[ESTABLISHED — verified four independent ways]`:
+`y² = x³ + 7`, secp256k1's own defining equation, has `E(Q) = {O}`.
+- `ellrank` returns bounds `0 .. 0`
+- `elltors` returns the trivial group
+- analytic rank 0 with `L(E,1) = 3.0414172284…` (nonzero)
+- brute force over `|a| ≤ 90000`, `c ≤ 300` finds **zero** affine rational points,
+  while the same scan on the control `y² = x³ + 1` finds exactly the expected 5:
+  `(0,±1), (−1,0), (2,±3)`
+- conductor 21168, `j = 0`, discriminant −21168
+
+So for secp256k1 the natural lift to characteristic 0 has an **empty** factor base.
+Not small — empty. Every "lift and find relations among small points" scheme, the
+elliptic-SNFS analogue included, starts from nothing on this curve.
+
+**Part 2 — xedni calculus, re-run on CM curves.** Silverman's xedni (1998) sidesteps
+the natural lift: it lifts `r` points of `E(F_p)` to integer coordinates and fits a
+*new* cubic through them, hoping the lifted points satisfy a relation. Jacobson,
+Koblitz, Menezes, Stein and Teske (≈1999–2000) showed this fails because the lifted
+points are independent with probability ≈ 1. We re-ran it on `j = 0` CM curves, in
+case the CM structure raises the chance of a low-rank lift.
+
+Lift `r` random points, solve the 5-coefficient linear system for a general
+Weierstrass cubic through them, verify every point lies on the fitted curve, then
+test independence via the determinant of the canonical-height pairing matrix
+(`ellbil`), scaled by the product of the diagonal so the test is relative.
+
+| r | curves | trials | fitted OK | **dependent** | singular | bad fit |
+|---|---|---|---|---|---|---|
+| 3 | 9 (20/24/28-bit, j=0) | 360 | 360 | **0** | 0 | 0 |
+| 4 | 9 | 360 | 360 | **0** | 0 | 0 |
+| 5 | 9 | 360 | 360 | **0** | 0 | 0 |
+
+**0 dependencies in 1080 lifts** (95% upper bound on the dependency rate: 0.0028).
+The CM structure does not help. This reproduces the published result exactly, on
+curves chosen to be as favourable as possible.
+
+**Synthesis — and why it agrees with N1 and K1.** The reason index calculus works on
+`F_p^*` and not on `E(F_p)` is that the *representative carries the group structure*
+in one case and not the other. An integer's factorisation is its decomposition into
+factor-base elements; a point's coordinates say nothing about its decomposition.
+That is a structural statement, and N1/K1 are its empirical form: no feature of
+`x(kP)` depends on `k`, no coordinate predicate is compatible with the group law, and
+the sumset of a coordinate-structured set is indistinguishable from uniform.
+Surfaces 1, 4 and 5 fail for one shared reason, now measured three different ways.
