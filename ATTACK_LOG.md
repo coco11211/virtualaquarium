@@ -342,3 +342,91 @@ manufactured a "discovery" (after the resampling bug and the tie-degenerate binn
 N1). All three were caught by the same rule: **every test ships with a control built
 to satisfy the null.** Without the random-bijection control this one would have read
 as a 5σ transfer result on the smallest curves.
+
+---
+
+## IC2 — ELIMINANT DENSITY: closing the algebraic decomposition oracle
+**Status:** COMPLETE · **Verdict: DEAD** (for the resultant/eliminant route) · **Date:** 2026-09-17
+**Data:** `ecdlp/data/eliminant.json` · **Code:** `ecdlp/py/eliminant.py`
+
+K1 killed the *combinatorial* decomposition oracle. The other family is *algebraic*:
+solve `S_{k+1}(x_1..x_k, x_R) = 0` with `x_i ∈ S` by elimination. Over `F_{q^n}` Weil
+descent makes this cheap; over `F_p` there is no descent, so everything depends on
+whether some structured `S` makes the eliminant small.
+
+- `k = 2`: the eliminant is `E(x_1) = ∏_{s∈S} S_3(x_1, s, x_R)`, degree `2|S|`,
+  computable by a product tree in `Õ(|S|)` — **for any `S`, structured or not**. That
+  already ties brute force, so `k = 2` settles nothing (and `k = 2` index calculus is
+  `Θ(n)` regardless).
+- `k = 3`: the eliminant is `E(x_1,x_2) = ∏_{s∈S} S_4(x_1, x_2, s, x_R)`, of bidegree
+  `(4|S|, 4|S|)`. Dense, that is `~16|S|²` coefficients — already brute force. **An
+  algebraic win requires the eliminant to be sparse.**
+
+Measured directly: build `E` by product tree over `S = μ_m` (the canonical
+intermediate-size algebraic subset of `F_p`, and the one with the richest structure)
+and over a random control set of the same size, then count nonzero coefficients.
+
+| curve | m | eliminant shape | nnz for `μ_m` | density | nnz for random `S` | density |
+|---|---|---|---|---|---|---|
+| c14_0 | 16 | 65×65 | 4223 / 4225 | 1.000 | 4223 | 1.000 |
+| c14_0 | 24 | 97×97 | 9409 / 9409 | **1.000** | 9409 | 1.000 |
+| c14_0 | 36 | 145×145 | 21023 / 21025 | 1.000 | 21021 | 1.000 |
+| c14_0 | 38 | 153×153 | 23399 / 23409 | 1.000 | 23405 | 1.000 |
+| c20_0 | 27 | 109×109 | 11881 / 11881 | **1.000** | 11881 | 1.000 |
+
+Fitted over 17 (curve, m) pairs:
+
+```
+S = μ_m    :  nnz ~ m^1.956   (r² = 1.0000)
+S = random :  nnz ~ m^1.956   (r² = 1.0000)
+```
+
+**The eliminant is completely dense, and the multiplicative subgroup is
+indistinguishable from a random set.** At `k = 3` the counting target is `θ ≤ k−3 = 0`
+— the oracle would have to be polylogarithmic — while merely *writing down* the
+eliminant costs `Θ(m²)`. The richest algebraic structure `F_p` offers buys exactly
+nothing.
+
+**Scope, stated honestly** `[SPECULATION vs ESTABLISHED boundary]`: this closes the
+resultant/eliminant route with a measurement. It does **not** prove that no algebraic
+oracle exists — a Gröbner strategy that never materialises the eliminant is not
+excluded by this data. What it does establish is that the one concrete mechanism by
+which algebraic structure could have helped — sparsity induced by the structure of `S`
+— is absent, and absent to three decimal places.
+
+---
+
+## IC1 — INDEX CALCULUS, BUILT AND MEASURED (partial: `k = 2`)
+**Status:** IN PROGRESS (`k=3`, `k=6` running) · **Verdict so far: DEAD** · **Date:** 2026-09-17
+**Data:** `ecdlp/data/ic_sweep_k*.json` · **Code:** `ecdlp/csrc/indexcalc.c`,
+`ecdlp/csrc/wiedemann.c`, `ecdlp/py/ic_sweep.py`
+
+Rather than argue about index calculus over prime fields, it is **built and run**: a
+complete working attack that solves real ECDLP instances on the toy curves, with every
+cost counted — factor base construction, sum-table construction, relation search, and
+linear algebra.
+
+- Factor base: the `m` points of smallest x-coordinate (public, canonical).
+- Decomposition: a precomputed table of all `j`-fold sums, then enumeration of the
+  remaining `k−j` with signs; working in `E/{±1}` so the table covers a sum and its
+  negative at once.
+- Linear algebra: **sparse Wiedemann** over `F_n` (`ecdlp/csrc/wiedemann.c`), measured
+  at `26·C²` field operations with a stable constant across sizes. Dense elimination
+  would have been `Θ(C³)` and would itself have dominated the very scaling being
+  measured — using it would have produced a meaningless number.
+- Correctness: every instance solved and verified against the sealed target, for
+  `(k,j) ∈ {(2,1),(3,2),(4,2)}` on 20/22/24-bit curves.
+
+Cost model (derived, then measured): `total ≈ m^j + n·m^{1−j} + 26m²`, optimised at
+`m = n^{1/(2j−1)}` giving `n^{j/(2j−1)}` — which tends to `n^{1/2}` **from above** and,
+for every finite `j`, needs `n^{j/(2j−1)}` *memory* where rho needs almost none.
+
+**Measured, `k = 2, j = 1`, 5 sizes (20–28 bits), 3 hidden targets each, m swept:**
+
+```
+ops = 2^1.21 · n^0.9770        r² = 0.9991      (predicted exponent 1.0)
+```
+
+versus rho's measured `n^0.5072`. At 28 bits index calculus needs `2.14·10^8`
+operations where rho needs `5.9·10^3` — a factor of 36000, and the gap grows as
+`n^0.47` per size step.

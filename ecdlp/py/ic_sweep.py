@@ -14,10 +14,10 @@ import indexcalc as IC
 
 CONFIGS = [
     # (k, j, label, max curve bits, memory cap on the table, m grid cap)
-    (2, 1, "k=2, j=1 (meet-in-the-middle)", 30, 10 ** 6, 4000),
-    (3, 2, "k=3, j=2 (2-sum table)",        38, 3 * 10 ** 7, 6000),
-    (4, 2, "k=4, j=2 (2-sum table)",        38, 3 * 10 ** 7, 6000),
-    (6, 3, "k=6, j=3 (3-sum table)",        40, 2 * 10 ** 7, 400),
+    (2, 1, "k=2, j=1 (meet-in-the-middle)", 28, 10 ** 6, 4000),
+    (3, 2, "k=3, j=2 (2-sum table)",        36, 2 * 10 ** 7, 5000),
+    (4, 2, "k=4, j=2 (2-sum table)",        36, 2 * 10 ** 7, 5000),
+    (6, 3, "k=6, j=3 (3-sum table)",        38, 1 * 10 ** 7, 300),
 ]
 
 
@@ -53,6 +53,7 @@ def run(k, j, label, maxbits, memcap, mcap, ntarget=3, tag=""):
                 best = rec
             print(f"  {cur.name:7s} k={k} j={j} m={m:5d}  ops={rec['mean_ops']:14.0f}"
                   f"  {rec['mean_sec']:7.2f}s", flush=True)
+        T.jdump(rows, os.path.join(T.DATA, f"ic_sweep_k{k}j{j}{tag}.json"))
         if best:
             print(f"  -> {cur.name} BEST m={best['m']} ops={best['mean_ops']:.4g}"
                   f"   rho_endo={T.rho_bar(cur.n):.4g}", flush=True)
