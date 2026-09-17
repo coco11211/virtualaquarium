@@ -304,3 +304,118 @@ void ec_scalar_mul(uint64_t p, uint64_t b_std, uint64_t Gx, uint64_t Gy,
     ec_mul(&c, &G, k, &R);
     *inf = R.inf; *rx = R.inf ? 0 : from_mont(&c, R.x); *ry = R.inf ? 0 : from_mont(&c, R.y);
 }
+
+/* ---------------- batch helpers for the experiment harness ---------------- */
+
+/* Batch affine point addition with one shared inversion (Montgomery's trick).
+   Inputs/outputs in STANDARD representation.  inf[] flags: bit0 of code.
+   Returns 0.  Degenerate cases (equal x) are handled per-point. */
+int ec_add_batch(uint64_t p, uint64_t b_std, int cnt,
+                 const uint64_t *ax, const uint64_t *ay,
+                 const uint64_t *bx, const uint64_t *by,
+                 uint64_t *rx, uint64_t *ry, int *rinf)
+{
+    fp_ctx c; fp_init(&c, p, b_std);
+    uint64_t *den = malloc(sizeof(uint64_t) * cnt);
+    uint64_t *acc = malloc(sizeof(uint64_t) * (cnt + 1));
+    uint64_t *AX = malloc(sizeof(uint64_t) * cnt), *AY = malloc(sizeof(uint64_t) * cnt);
+    uint64_t *BX = malloc(sizeof(uint64_t) * cnt), *BY = malloc(sizeof(uint64_t) * cnt);
+    int *deg = malloc(sizeof(int) * cnt);
+    for (int i = 0; i < cnt; i++) {
+        AX[i] = to_mont(&c, ax[i]); AY[i] = to_mont(&c, ay[i]);
+        BX[i] = to_mont(&c, bx[i]); BY[i] = to_mont(&c, by[i]);
+        if (AX[i] == BX[i]) {
+            if (AY[i] == BY[i] && AY[i] != 0) { deg[i] = 1; den[i] = mont_add(&c, AY[i], AY[i]); }
+            else { deg[i] = 2; den[i] = c.r1; }         /* P = -Q -> infinity */
+        } else { deg[i] = 0; den[i] = mont_sub(&c, BX[i], AX[i]); }
+    }
+    acc[0] = c.r1;
+    for (int i = 0; i < cnt; i++) acc[i+1] = mont_mul(&c, acc[i], den[i]);
+    uint64_t iv = mont_inv(&c, acc[cnt]);
+    for (int i = cnt - 1; i >= 0; i--) {
+        uint64_t d = mont_mul(&c, iv, acc[i]);
+        iv = mont_mul(&c, iv, den[i]);
+        den[i] = d;
+    }
+    for (int i = 0; i < cnt; i++) {
+        if (deg[i] == 2) { rinf[i] = 1; rx[i] = ry[i] = 0; continue; }
+        uint64_t num;
+        if (deg[i] == 1) { uint64_t x2 = mont_mul(&c, AX[i], AX[i]);
+                           num = mont_add(&c, mont_add(&c, x2, x2), x2); }
+        else             { num = mont_sub(&c, BY[i], AY[i]); }
+        uint64_t lam = mont_mul(&c, num, den[i]);
+        uint64_t xr = mont_sub(&c, mont_sub(&c, mont_mul(&c, lam, lam), AX[i]), BX[i]);
+        uint64_t yr = mont_sub(&c, mont_mul(&c, lam, mont_sub(&c, AX[i], xr)), AY[i]);
+        rx[i] = from_mont(&c, xr); ry[i] = from_mont(&c, yr); rinf[i] = 0;
+    }
+    free(den); free(acc); free(AX); free(AY); free(BX); free(BY); free(deg);
+    return 0;
+}
+
+/* For each x in xs[], if x^3+b is a QR return the point (x, min(y,p-y)) and set
+   ok=1, else ok=0.  Standard representation. */
+int ec_lift_batch(uint64_t p, uint64_t b_std, int cnt, const uint64_t *xsv,
+                  uint64_t *ry, int *ok)
+{
+    fp_ctx c; fp_init(&c, p, b_std);
+    if (p % 4 != 3) {
+        /* Tonelli-Shanks setup */
+        uint64_t q = p - 1; int s = 0;
+        while (!(q & 1)) { q >>= 1; s++; }
+        uint64_t zz = 2;
+        while (mont_pow(&c, to_mont(&c, zz), (p-1)/2) != c.p - c.r1 + (c.r1 ? 0 : 0)) {
+            /* find a non-residue: compare against -1 in Montgomery form */
+            uint64_t v = mont_pow(&c, to_mont(&c, zz), (p-1)/2);
+            if (v == mont_neg(&c, c.r1)) break;
+            zz++;
+            if (zz > 1000) break;
+        }
+        uint64_t cc = mont_pow(&c, to_mont(&c, zz), q);
+        for (int i = 0; i < cnt; i++) {
+            uint64_t a = to_mont(&c, xsv[i]);
+            uint64_t rhs = mont_add(&c, mont_mul(&c, mont_mul(&c, a, a), a), c.b);
+            if (rhs == 0) { ry[i] = 0; ok[i] = 1; continue; }
+            if (mont_pow(&c, rhs, (p-1)/2) != c.r1) { ok[i] = 0; ry[i] = 0; continue; }
+            int m = s; uint64_t C = cc;
+            uint64_t t = mont_pow(&c, rhs, q);
+            uint64_t r = mont_pow(&c, rhs, (q+1)/2);
+            while (t != c.r1) {
+                int i2 = 0; uint64_t t2 = t;
+                while (t2 != c.r1) { t2 = mont_mul(&c, t2, t2); i2++; }
+                uint64_t bb = C;
+                for (int j = 0; j < m - i2 - 1; j++) bb = mont_mul(&c, bb, bb);
+                m = i2; C = mont_mul(&c, bb, bb);
+                t = mont_mul(&c, t, C);
+                r = mont_mul(&c, r, bb);
+            }
+            uint64_t y = from_mont(&c, r);
+            ry[i] = y < p - y ? y : p - y; ok[i] = 1;
+        }
+        return 0;
+    }
+    for (int i = 0; i < cnt; i++) {
+        uint64_t a = to_mont(&c, xsv[i]);
+        uint64_t rhs = mont_add(&c, mont_mul(&c, mont_mul(&c, a, a), a), c.b);
+        if (rhs == 0) { ry[i] = 0; ok[i] = 1; continue; }
+        uint64_t y = mont_pow(&c, rhs, (p + 1) / 4);
+        if (mont_mul(&c, y, y) != rhs) { ok[i] = 0; ry[i] = 0; continue; }
+        uint64_t ys = from_mont(&c, y);
+        ry[i] = ys < p - ys ? ys : p - ys; ok[i] = 1;
+    }
+    return 0;
+}
+
+/* batch scalar multiples k_i * P  (standard representation) */
+int ec_mul_batch(uint64_t p, uint64_t b_std, uint64_t Gx, uint64_t Gy, int cnt,
+                 const uint64_t *ks, uint64_t *rx, uint64_t *ry, int *rinf)
+{
+    fp_ctx c; fp_init(&c, p, b_std);
+    ecpt G = { to_mont(&c, Gx), to_mont(&c, Gy), 0 };
+    for (int i = 0; i < cnt; i++) {
+        ecpt R; ec_mul(&c, &G, ks[i], &R);
+        rinf[i] = R.inf;
+        rx[i] = R.inf ? 0 : from_mont(&c, R.x);
+        ry[i] = R.inf ? 0 : from_mont(&c, R.y);
+    }
+    return 0;
+}

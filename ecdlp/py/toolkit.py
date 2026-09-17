@@ -297,3 +297,42 @@ def jdump(obj, path):
     with open(path, "w") as f:
         json.dump(obj, f, indent=1, default=str)
     return path
+
+
+@dataclass(frozen=True)
+class SpecialCurve(Curve):
+    """Toy curve over a prime of secp256k1's shape p = t^d - t - c, t = 2^s."""
+    s: int = 0
+    t: int = 0
+    c: int = 0
+    d: int = 8
+
+    @property
+    def name(self) -> str:
+        return f"sp{self.bits}"
+
+    def tadic(self, x: int) -> List[int]:
+        """base-t digits, least significant first, length d"""
+        out = []
+        for _ in range(self.d):
+            out.append(x % self.t)
+            x //= self.t
+        return out
+
+
+def load_special(path: Optional[str] = None) -> List["SpecialCurve"]:
+    path = path or os.path.join(DATA, "curves_special.json")
+    out = []
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line.startswith("{"):
+                continue
+            d = json.loads(line)
+            if "NONE" in d:
+                continue
+            out.append(SpecialCurve(bits=d["bits"], idx=0, p=d["p"], n=d["n"],
+                                    gx=d["gx"], gy=d["gy"], beta=d["beta"],
+                                    lam=d["lambda"], s=d["s"], t=d["t"], c=d["c"], d=8))
+    out.sort(key=lambda c: c.bits)
+    return out
