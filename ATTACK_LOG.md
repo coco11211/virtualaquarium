@@ -488,3 +488,48 @@ factor of two *in the exponent*; giving it the full algebraic structure does not
 The ablation arms (special-prime shape, `λ` constraint, ladder encoding) are queued in
 `IDEA_QUEUE.md` as the part that could still surprise — a slope *shift* would be a real,
 if small, non-generic effect.
+
+---
+
+## G1 — MU6-GRADED-SEMAEV: does the `j=0` symmetry lower the algebraic complexity?
+**Status:** COMPLETE · **Verdict: DEAD as an exponent-level idea** · **Date:** 2026-09-17
+**Data:** `ecdlp/data/mu6_graded.json` · **Code:** `ecdlp/py/mu6_graded.py`
+
+`IDEA_QUEUE.md`'s top algebraic item, and the one quantity IC2 did not cover. The order-3
+automorphism `(x,y) ↦ (βx, y) = λ(x,y)` means `P_1 + … + P_k = O ⟹ λP_1 + … + λP_k = O`,
+so the solution set of `S_k` is stable under the **diagonal** action `x_i ↦ βx_i`.
+
+**G1 — the grading is real.** Every monomial of `S_k` lies in a single residue class of
+total degree mod 3:
+
+| | monomials | total degree mod 3 | weight |
+|---|---|---|---|
+| `S_3` | 9 | all ≡ 1 | `S_3(βx₁,βx₂,βx₃) = β·S_3` |
+| `S_4` | 191 | all ≡ 0 | `S_4(βx₁,…,βx₄) = S_4` |
+
+**G2 — but the grading does not survive fixing the target.** IC2 found the eliminant
+`E(x₁,x₂) = ∏_{s∈S} S_4(x₁,x₂,s,x_R)` completely dense. If the `μ_3` action produced
+sparsity, `E`'s nonzero coefficients would concentrate on one residue class of
+`(e₁+e₂) mod 3` — density `1/3`, max class share ≈ 1.000. Measured over 14 `(curve, m)`
+pairs with `S = μ_m`, `3 | m` (so `S` is genuinely `μ_3`-stable):
+
+| curve | m | nnz | by `(e₁+e₂) mod 3` | max share | random `S` max share |
+|---|---|---|---|---|---|
+| c14_0 | 24 | 9409/9409 | 3137 / 3136 / 3136 | **0.333** | 0.333 |
+| c14_0 | 36 | 21025/21025 | 7009 / 7008 / 7008 | **0.333** | 0.333 |
+| c20_0 | 27 | 11881/11881 | 3961 / 3960 / 3960 | **0.333** | 0.333 |
+
+**Exactly equal thirds, identical to a random set.** The mechanism is clear once stated:
+the action is *diagonal on all variables including `x_R`*, so it relates decompositions of
+`R` to decompositions of `λR` — not to other decompositions of the same `R`. Fixing the
+target breaks the grading, and with it any hope of graded sparsity.
+
+**G3 — what the symmetry actually buys.** Working in `E/⟨λ, −1⟩` shrinks the factor base
+by exactly 6 and the reduced space to `(n−1)/6` (confirmed by orbit-representative counts
+at 24/28/32 bits). In the cost model `A·m^j + B·n·m^{1−j} + C·m²`, replacing `m` by `m/6`
+rescales the terms by `6^j` and `6^{j−1}`: **a constant factor. The exponent
+`j/(2j−1)` is unchanged.**
+
+This is the same `√6` that rho already gets, and for the same reason. The `j=0` CM
+structure — secp256k1's most distinctive feature — is worth a constant, at every level of
+the attack, and nothing more.

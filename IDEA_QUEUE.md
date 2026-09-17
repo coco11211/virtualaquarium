@@ -47,7 +47,9 @@ Two oracle families are known, and both are now measured:
 | `SNFS-ANALOGUE` / `XEDNI-CM` (L1) | lifting to characteristic 0 | **DEAD** | `E(Q) = {O}` for `y²=x³+7` (four independent verifications); 0 dependencies in 1080 xedni lifts |
 | `HOM-SEARCH` (T1) | transfer via `log_g x(P)` in `F_p^*` | **DEAD** | quasi-homomorphism defect uniform; 12-map machine search finds only estimator bias; the apparent 5σ result was a sampling artifact reproduced by a random bijection |
 | `IC-ELIMINANT` (IC2) | algebraic decomposition oracle | **DEAD** | eliminant density `1.000`, `nnz ∝ m^1.956`, `μ_m` identical to random |
-| `IC-BUILD` (IC1) | index calculus, actually built | **DEAD** at `k=2` | measured `n^0.9770`, `r²=0.999` |
+| `IC-BUILD` (IC1) | index calculus, actually built | **DEAD** | `k=2: n^0.977` · `k=3: n^0.605→2/3` · `k=6: n^0.465→3/5`; 256-bit projections `2^257 / 2^174 / 2^157` vs rho `2^127.8` |
+| `SAT-SCALING` (SAT1) | bit-level solver on the ECDLP | **DEAD** | slope 2.21 bits⁻¹ vs 1.0 brute force, 0.5 rho; `2^551` s at 256 bits |
+| `MU6-GRADED-SEMAEV` (G1) | does the `j=0` symmetry lower algebraic complexity | **DEAD** (exponent-level) | `S_3`, `S_4` are `μ_3`-graded, but fixing `x_R` breaks the grading: eliminant splits into exactly equal thirds. Orbit reduction is a constant factor 6 |
 | `LATTES-DYNAMICS` | functional-graph anomalies of the Lattès walk | **DEAD** (indirect) | rho's measured constant matches random-map theory to a few % at every size — the walk *is* random-like |
 | `COVER-GENUS` | higher-genus covers | **DEAD** (analytic) | a degree-`d` cover has `#Jac ≈ p^g`; index calculus there costs `Õ(p^{2−2/g}) > p^{1/2}` for every `g ≥ 2`. Descent needs a *smaller field*; `F_p` has none |
 | `ANOMALOUS-ESCAPE` | p-adic elliptic log when `#E ≠ p` | **DEAD** (analytic) | `v = k·u + n·w` with `u,v,w ∈ pZ_p`; dividing by `p` leaves `n·(w/p)` unknown mod `p` unless `p | n`. Information is recoverable mod `p`, the scalar lives mod `n`; they coincide only for anomalous curves |
@@ -63,7 +65,14 @@ a real attack, measured across sizes, plotted against rho. `k=2` is in (`n^0.977
 `n^{1/2}` **from above** empirically rather than by assertion.
 **Kill:** all fitted exponents `≥ 0.5` ⇒ the combinatorial family is closed with data.
 
-### 2. `MU6-GRADED-SEMAEV` — does the `j=0` symmetry lower the solving degree?
+### ~~2. `MU6-GRADED-SEMAEV`~~ — **CLOSED, see ATTACK_LOG G1.** The grading is real
+(`S_3` weight 1, `S_4` weight 0 under the diagonal `μ_3` action) but does not survive
+fixing the target, because the action moves `R` to `λR` rather than fixing it. The
+eliminant splits into exactly equal thirds. What remains untested is the Gröbner solving
+degree itself, which needs an F4/F5 engine this environment does not have; the eliminant
+measurement is the strongest available proxy.
+
+### 2b. `MU6-GROEBNER-DEGREE` (needs tooling) — measure the degree of regularity directly
 **Source:** `gen:semaev` + `gen:cm-j0` · **Cost:** days · **Non-generic:** the order-6
 automorphism group acts on `S_m`; the quotient of `E` by `⟨ω⟩` is rational, so the
 Weber coordinate `u = x³` is a genuine change of the polynomial system.
@@ -169,4 +178,4 @@ admits no relations beyond Euler-system ones.
 and `χ₃(x(λP)) = χ₃(β)χ₃(x(P))` is an identity relating `P` to `λP`, not to `k`).
 
 ---
-*Updated 2026-09-17 after F0, N1, N2, K1, L1, T1, IC1 (partial), IC2.*
+*Updated 2026-09-17 after F0, N1, N2, K1, L1, T1, IC1, IC2, SAT1, G1.*
